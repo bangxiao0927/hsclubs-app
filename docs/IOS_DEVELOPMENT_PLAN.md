@@ -29,6 +29,7 @@ HSclubs Guiding Page 的浏览器端是 React 应用，通过相对地址 `GET /
       "siteUrl": "https://hsclubs.net",
       "host": "hsclubs.net",
       "demo": false,
+      "location": { "lat": 37.359106, "lon": -122.067156 },
       "status": "live",
       "schoolName": "HS Clubs",
       "address": null,
@@ -131,7 +132,7 @@ HSclubs Guiding Page 的浏览器端是 React 应用，通过相对地址 `GET /
 ### 里程碑 C：详情与趋势
 
 - 实现学校详情、状态说明、分类数量、时间语义和 Swift Charts 趋势。
-- 校验 `siteUrl` 为 `https` 后，通过 `SFSafariViewController` 或 `openURL` 打开。
+- 校验 `siteUrl` 为 `https` 且 host 一致后，通过全屏学校站点打开；跨 origin 导航交由系统浏览器处理。
 - 验收：`nil` 数据不显示误导值；只有一个历史点时不声称存在趋势；演示学校标识明显。
 
 ### 里程碑 D：系统体验

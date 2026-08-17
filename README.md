@@ -1,8 +1,8 @@
 # HSclubs iOS
 
-HSclubs iOS 是 [HSclubs Guiding Page](https://clubs.bangxiao.net) 的原生 iOS 客户端，目标是让用户在 iPhone 上浏览、搜索和筛选已验证学校的社团目录。
+HSclubs iOS 是 [HSclubs Guiding Page](https://clubs.bangxiao.net) 的学校切换入口。用户搜索并选择已验证学校后，App 全屏打开该学校自己管理的站点。
 
-> 当前状态：规划阶段。本仓库暂不包含可运行的 Xcode 工程，开发前的技术检查和实施流程见 [iOS 开发流程](docs/IOS_DEVELOPMENT_PLAN.md)。
+> 当前状态：已完成精简学校选择器、生产 API、离线缓存、全屏学校站点、上次学校记忆和悬浮切换入口。后续实施流程见 [iOS 开发流程](docs/IOS_DEVELOPMENT_PLAN.md)。
 
 ## 页面检查结论
 
@@ -10,12 +10,12 @@ Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开�
 
 - 公开数据接口：`GET https://clubs.bangxiao.net/api/schools`
 - 接口当前可通过 HTTPS 访问，返回 `200 application/json`
-- 核心功能：总览、学校列表、按学校名或域名搜索、分类筛选、排序、学校详情、数据状态与趋势
-- 学校主页由接口的 `siteUrl` 提供，应用应使用 `SFSafariViewController` 或系统浏览器打开
+- 核心功能：按学校名或域名搜索、选择学校、记住上次选择、全屏打开学校站点和切换学校
+- 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；跨 origin 导航交由系统浏览器处理
 - `/api/status` 是运维接口并受 Basic Auth 保护，不属于普通 iOS 客户端功能
 - 数据是只读公开摘要，不包含登录、成员资料或社团管理功能
 
-建议使用 **SwiftUI 原生开发**，而不是把网页直接封装进 `WKWebView`。原生方案在离线缓存、无障碍、动态字体、导航、测试和 App Store 体验上更可靠。`WKWebView` 仅适合验证想法的短期原型。
+学校选择器使用 **SwiftUI 原生开发**。完整学校站点包含登录和管理会话，经 HTTPS/host 校验后作为全屏 `WKWebView` 交给学校自己的 Web 实现；悬浮切换按钮可拖动、贴边，点击后向屏幕内侧展开 `Switch School`，点击页面或稍等片刻会自动收回。
 
 ## 建议技术栈
 
@@ -57,7 +57,23 @@ HSclubsAppUITests/
 
 ## 开始开发
 
-完整步骤、验收标准、测试和上架清单见 [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md)。开始编码前，建议先在 Guiding Page 服务端明确并版本化 `/api/schools` 的契约，避免 Web 与 iOS 各自维护的数据结构发生漂移。
+1. 使用 Xcode 16 或更高版本打开 `HSclubs.xcodeproj`。
+2. 选择共享的 `HSclubs` Scheme 和任意 iOS 17+ 模拟器后运行。
+3. 修改 `project.yml` 后执行 `xcodegen generate` 重新生成工程。
+
+命令行构建：
+
+```bash
+xcodebuild -project HSclubs.xcodeproj \
+  -scheme HSclubs \
+  -configuration Development \
+  -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO build
+```
+
+`Development`、`Staging`、`Production` 的服务地址分别由 `Configurations/` 下的 `.xcconfig` 注入。完整步骤、验收标准、测试和上架清单见 [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md)。开始数据层编码前，建议先在 Guiding Page 服务端明确并版本化 `/api/schools` 的契约，避免 Web 与 iOS 各自维护的数据结构发生漂移。
+
+App 只读取 Guiding Page 的聚合接口，不直接轮询学校。开发时可运行 `python3 scripts/verify_guide_data.py`，读取真实学校的权威 `/api/summary`，核对聚合接口中的身份、社团总数、分类和发布时间；演示学校使用保存的数据，因此会被明确跳过。学校独立部署和自主管理的边界见 [`docs/SYNC_ARCHITECTURE.md`](docs/SYNC_ARCHITECTURE.md)。
 
 ## 许可证
 
