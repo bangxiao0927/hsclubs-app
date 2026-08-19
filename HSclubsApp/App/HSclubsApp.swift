@@ -4,7 +4,6 @@ import SwiftUI
 struct HSclubsApp: App {
     @State private var directoryModel = AppEnvironment.makeDirectoryViewModel()
     @State private var schoolSelection = SchoolSelection()
-    @State private var mobileAuth = MobileAuthController()
 
     init() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -22,13 +21,12 @@ struct HSclubsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(model: directoryModel, schoolSelection: schoolSelection, mobileAuth: mobileAuth)
-                // Universal Links arrive as a web-browsing activity, on cold start and while
-                // running alike. The callback path is the only one the app claims (see the
-                // Associated Domains entitlement); anything else is left to the browser.
-                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
-                    mobileAuth.handle(activity)
-                }
+            // The mobile-auth callback returns through ASWebAuthenticationSession's own https
+            // callback (see WebAuthenticating), which is the Universal Link mechanism and keeps the
+            // whole flow inside the sign-in the app started. There is deliberately no separate
+            // inbound-link handler: a callback that arrived outside a live session would have no
+            // web view to spend its code in, so handling it would only produce spurious errors.
+            RootView(model: directoryModel, schoolSelection: schoolSelection)
         }
     }
 }

@@ -36,8 +36,24 @@ jobs:
     name: google sign-in end to end
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       # A real Google test account driving the whole sign-in is the last gate before release. It
       # lives here, on the schedule and on demand, rather than on PRs, because Google automation is
-      # subject to MFA, captcha and risk checks and must never block ordinary work. Wire the actual
-      # driver (a test account and the staging build) into this step when the credentials exist.
-      - run: echo "Google sign-in E2E runs against staging with a test account; see hsclubs-app#4."
+      # subject to MFA, captcha and risk checks and must never block ordinary work.
+      #
+      # The gate is honest about not being wired yet: without the test-account credentials in the
+      # secret store it FAILS rather than reporting a false green, so a release is genuinely blocked
+      # until the driver and its credentials exist. Replace the guard with the real driver then.
+      - name: run staging Google sign-in E2E
+        env:
+          GOOGLE_TEST_ACCOUNT: ${{ secrets.GOOGLE_TEST_ACCOUNT }}
+          GOOGLE_TEST_PASSWORD: ${{ secrets.GOOGLE_TEST_PASSWORD }}
+          STAGING_BASE_URL: ${{ vars.STAGING_BASE_URL }}
+        run: |
+          if [ -z "$GOOGLE_TEST_ACCOUNT" ] || [ -z "$GOOGLE_TEST_PASSWORD" ] || [ -z "$STAGING_BASE_URL" ]; then
+            echo "Google sign-in E2E is not wired: set GOOGLE_TEST_ACCOUNT, GOOGLE_TEST_PASSWORD and STAGING_BASE_URL."
+            echo "The release gate is intentionally failing so a release is not shipped without this check (hsclubs-app#4)."
+            exit 1
+          fi
+          echo "Credentials present; run the staging Google sign-in driver here."
+          # TODO: invoke the real end-to-end sign-in driver against $STAGING_BASE_URL.
