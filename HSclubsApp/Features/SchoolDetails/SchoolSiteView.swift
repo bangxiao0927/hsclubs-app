@@ -7,6 +7,8 @@ struct SchoolSiteView: View {
 
     @State private var isLoading = false
     @State private var failureMessage: String?
+    @State private var login = MobileAuthLoginController(webAuth: ASWebAuthenticationRunner())
+    @State private var webSession = SchoolWebSession()
 
     init(school: DirectorySchool, siteURL: URL, schoolSelection: SchoolSelection) {
         self.school = school
@@ -19,7 +21,12 @@ struct SchoolSiteView: View {
             SchoolSiteWebView(
                 url: siteURL,
                 onLoadingChanged: { isLoading = $0 },
-                onFailure: { failureMessage = $0 }
+                onFailure: { failureMessage = $0 },
+                onLoginRequested: { returnTo in
+                    guard school.mobileAuth else { return }
+                    Task { await login.signIn(to: school, returnTo: returnTo, using: webSession) }
+                },
+                onWebViewCreated: { webSession.attach($0) }
             )
             .ignoresSafeArea()
 
@@ -47,6 +54,25 @@ struct SchoolSiteView: View {
             }
 
             FloatingSchoolButton(school: school, schoolSelection: schoolSelection)
+        }
+        // A signing-in overlay while the system sheet is dismissed and the code is spent.
+        .overlay {
+            if login.state == .completing {
+                ProgressView("Signing in...")
+                    .padding(16)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+            }
+        }
+        .alert(
+            "Sign-in problem",
+            isPresented: Binding(
+                get: { if case .failed = login.state { return true } else { return false } },
+                set: { presented in if !presented { login.dismissFailure() } }
+            )
+        ) {
+            Button("OK", role: .cancel) { login.dismissFailure() }
+        } message: {
+            if case .failed(let message) = login.state { Text(message) }
         }
     }
 }

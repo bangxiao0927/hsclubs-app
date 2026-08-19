@@ -48,6 +48,14 @@
 		DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000021 /* MobileAuthCallbackTests.swift */; };
 		DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */; };
 		DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000025 /* MobileAuthControllerTests.swift */; };
+		DF0000000000000000000029 /* MobileAuthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000028 /* MobileAuthConfig.swift */; };
+		DF0000000000000000000031 /* MobileAuthPkce.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000030 /* MobileAuthPkce.swift */; };
+		DF0000000000000000000033 /* WebAuthenticating.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000032 /* WebAuthenticating.swift */; };
+		DF0000000000000000000035 /* SchoolSessionCompleting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000034 /* SchoolSessionCompleting.swift */; };
+		DF0000000000000000000037 /* MobileAuthLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000036 /* MobileAuthLoginController.swift */; };
+		DF0000000000000000000039 /* SchoolWebSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000038 /* SchoolWebSession.swift */; };
+		DF0000000000000000000041 /* MobileAuthPkceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000040 /* MobileAuthPkceTests.swift */; };
+		DF0000000000000000000043 /* MobileAuthLoginControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +127,14 @@
 		DF0000000000000000000021 /* MobileAuthCallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthCallbackTests.swift; sourceTree = "<group>"; };
 		DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthFlowStoreTests.swift; sourceTree = "<group>"; };
 		DF0000000000000000000025 /* MobileAuthControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthControllerTests.swift; sourceTree = "<group>"; };
+		DF0000000000000000000028 /* MobileAuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthConfig.swift; sourceTree = "<group>"; };
+		DF0000000000000000000030 /* MobileAuthPkce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthPkce.swift; sourceTree = "<group>"; };
+		DF0000000000000000000032 /* WebAuthenticating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAuthenticating.swift; sourceTree = "<group>"; };
+		DF0000000000000000000034 /* SchoolSessionCompleting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSessionCompleting.swift; sourceTree = "<group>"; };
+		DF0000000000000000000036 /* MobileAuthLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthLoginController.swift; sourceTree = "<group>"; };
+		DF0000000000000000000038 /* SchoolWebSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolWebSession.swift; sourceTree = "<group>"; };
+		DF0000000000000000000040 /* MobileAuthPkceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthPkceTests.swift; sourceTree = "<group>"; };
+		DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthLoginControllerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -326,6 +342,7 @@
 		D00E9842D6882D88F1F6591E /* SchoolDetails */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000038 /* SchoolWebSession.swift */,
 				5C4DCD205EAEC78D50032115 /* .gitkeep */,
 				4528A6948C30A065CAE6D2BF /* FloatingSwitcherGestureView.swift */,
 				B89F1F61FEF555B5BD55E68D /* FloatingSwitcherLayout.swift */,
@@ -362,6 +379,11 @@
 		DF0000000000000000000020 /* MobileAuth */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000028 /* MobileAuthConfig.swift */,
+				DF0000000000000000000030 /* MobileAuthPkce.swift */,
+				DF0000000000000000000032 /* WebAuthenticating.swift */,
+				DF0000000000000000000034 /* SchoolSessionCompleting.swift */,
+				DF0000000000000000000036 /* MobileAuthLoginController.swift */,
 				DF0000000000000000000013 /* MobileAuthCallback.swift */,
 				DF0000000000000000000017 /* MobileAuthFlowStore.swift */,
 				DF0000000000000000000015 /* PendingAuthFlow.swift */,
@@ -372,6 +394,8 @@
 		DF0000000000000000000027 /* MobileAuth */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000040 /* MobileAuthPkceTests.swift */,
+				DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */,
 				DF0000000000000000000021 /* MobileAuthCallbackTests.swift */,
 				DF0000000000000000000025 /* MobileAuthControllerTests.swift */,
 				DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */,
@@ -495,6 +519,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000029 /* MobileAuthConfig.swift in Sources */,
+				DF0000000000000000000031 /* MobileAuthPkce.swift in Sources */,
+				DF0000000000000000000033 /* WebAuthenticating.swift in Sources */,
+				DF0000000000000000000035 /* SchoolSessionCompleting.swift in Sources */,
+				DF0000000000000000000037 /* MobileAuthLoginController.swift in Sources */,
+				DF0000000000000000000039 /* SchoolWebSession.swift in Sources */,
 				DF0000000000000000000012 /* MobileAuthController.swift in Sources */,
 				DF0000000000000000000014 /* MobileAuthCallback.swift in Sources */,
 				DF0000000000000000000016 /* PendingAuthFlow.swift in Sources */,
@@ -525,6 +555,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000041 /* MobileAuthPkceTests.swift in Sources */,
+				DF0000000000000000000043 /* MobileAuthLoginControllerTests.swift in Sources */,
 				DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */,
 				DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */,
 				DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */,

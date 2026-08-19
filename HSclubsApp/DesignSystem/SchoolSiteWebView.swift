@@ -5,14 +5,24 @@ struct SchoolSiteWebView: UIViewRepresentable {
     let url: URL
     let onLoadingChanged: (Bool) -> Void
     let onFailure: (String) -> Void
+    /// The fixed sign-in entry was tapped on the verified origin; the argument is the current
+    /// site-relative path, to return to after signing in.
+    var onLoginRequested: ((String?) -> Void)?
+    /// Hands the created web view to whatever completes the sign-in inside it.
+    var onWebViewCreated: ((WKWebView) -> Void)?
 
     func makeUIView(context: Context) -> WKWebView {
         let configuration = WKWebViewConfiguration()
+        // Appends to the default UA rather than replacing it, so the school still sees a normal
+        // browser UA plus a marker that the app can drive mobile auth. The marker advertises a
+        // capability; it is never a credential (see contracts/v1/README.md).
+        configuration.applicationNameForUserAgent = MobileAuthConfig.userAgentMarker
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = true
         webView.load(URLRequest(url: url))
+        onWebViewCreated?(webView)
         return webView
     }
 
@@ -22,7 +32,8 @@ struct SchoolSiteWebView: UIViewRepresentable {
         Coordinator(
             expectedHost: url.host,
             onLoadingChanged: onLoadingChanged,
-            onFailure: onFailure
+            onFailure: onFailure,
+            onLoginRequested: onLoginRequested
         )
     }
 
@@ -30,15 +41,18 @@ struct SchoolSiteWebView: UIViewRepresentable {
         private let expectedHost: String?
         private let onLoadingChanged: (Bool) -> Void
         private let onFailure: (String) -> Void
+        private let onLoginRequested: ((String?) -> Void)?
 
         init(
             expectedHost: String?,
             onLoadingChanged: @escaping (Bool) -> Void,
-            onFailure: @escaping (String) -> Void
+            onFailure: @escaping (String) -> Void,
+            onLoginRequested: ((String?) -> Void)?
         ) {
             self.expectedHost = expectedHost
             self.onLoadingChanged = onLoadingChanged
             self.onFailure = onFailure
+            self.onLoginRequested = onLoginRequested
         }
 
         func webView(
@@ -48,6 +62,18 @@ struct SchoolSiteWebView: UIViewRepresentable {
             guard let url = navigationAction.request.url else { return .cancel }
             if navigationAction.navigationType == .other && url.absoluteString.hasPrefix("about:") {
                 return .allow
+            }
+
+            // The fixed sign-in entry on this school's own origin is never loaded in the web view:
+            // it is handed to the native flow, which runs Google in the system browser. This is the
+            // only interception, and only on the verified origin.
+            if let expectedHost,
+               url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame,
+               url.scheme == "https",
+               url.path == MobileAuthConfig.startPath,
+               let onLoginRequested {
+                onLoginRequested(currentReturnPath(navigationAction))
+                return .cancel
             }
 
             guard navigationAction.targetFrame?.isMainFrame != false else {
@@ -135,6 +161,22 @@ struct SchoolSiteWebView: UIViewRepresentable {
             }
             onLoadingChanged(false)
             onFailure(error.localizedDescription)
+        }
+
+        /// The current page's site-relative path, to return to after signing in.
+        private func currentReturnPath(_ navigationAction: WKNavigationAction) -> String? {
+            guard let current = navigationAction.sourceFrame.request.url,
+                  let components = URLComponents(url: current, resolvingAgainstBaseURL: false),
+                  let host = current.host,
+                  let expectedHost,
+                  host.caseInsensitiveCompare(expectedHost) == .orderedSame else {
+                return nil
+            }
+            let path = components.path.isEmpty ? "/" : components.path
+            if let query = components.query, !query.isEmpty {
+                return path + "?" + query
+            }
+            return path
         }
     }
 }
