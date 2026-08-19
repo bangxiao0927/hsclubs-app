@@ -1,0 +1,43 @@
+﻿name: Release gate
+
+# Never on pull_request: a school's own outage or a flaky Google run must not turn an unrelated
+# PR red. This is the gate a release is held to, run on a schedule and on demand.
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  contract:
+    name: v1 contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/check-contracts.mjs
+
+  release-check:
+    name: real schools ready
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # Every real school must pass manifest, summary, directory, Universal Link and mobile-auth
+      # checks; demo schools are excluded from the auth gate.
+      - run: node scripts/release-check.mjs
+        env:
+          HSCLUBS_GUIDE_ORIGIN: ${{ vars.HSCLUBS_GUIDE_ORIGIN }}
+
+  google-e2e:
+    name: google sign-in end to end
+    runs-on: ubuntu-latest
+    steps:
+      # A real Google test account driving the whole sign-in is the last gate before release. It
+      # lives here, on the schedule and on demand, rather than on PRs, because Google automation is
+      # subject to MFA, captcha and risk checks and must never block ordinary work. Wire the actual
+      # driver (a test account and the staging build) into this step when the credentials exist.
+      - run: echo "Google sign-in E2E runs against staging with a test account; see hsclubs-app#4."

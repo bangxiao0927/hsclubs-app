@@ -38,7 +38,7 @@ struct SchoolSiteWebView: UIViewRepresentable {
     }
 
     final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
-        private let expectedHost: String?
+        private let policy: SchoolSiteNavigationPolicy?
         private let onLoadingChanged: (Bool) -> Void
         private let onFailure: (String) -> Void
         private let onLoginRequested: ((String?) -> Void)?
@@ -49,7 +49,7 @@ struct SchoolSiteWebView: UIViewRepresentable {
             onFailure: @escaping (String) -> Void,
             onLoginRequested: ((String?) -> Void)?
         ) {
-            self.expectedHost = expectedHost
+            self.policy = expectedHost.map(SchoolSiteNavigationPolicy.init(expectedHost:))
             self.onLoadingChanged = onLoadingChanged
             self.onFailure = onFailure
             self.onLoginRequested = onLoginRequested
@@ -64,55 +64,27 @@ struct SchoolSiteWebView: UIViewRepresentable {
                 return .allow
             }
 
-            // The fixed sign-in entry on this school's own origin is never loaded in the web view:
-            // it is handed to the native flow, which runs Google in the system browser. This is the
-            // only interception, and only on the verified origin.
-            if let expectedHost,
-               url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame,
-               url.scheme == "https",
-               url.path == MobileAuthConfig.startPath,
-               let onLoginRequested {
-                onLoginRequested(currentReturnPath(navigationAction))
+            // Without a verified origin there is nothing to anchor same-origin against; refuse.
+            guard let policy else { return .cancel }
+
+            let decision = policy.decide(
+                url: url,
+                navigationType: navigationAction.navigationType,
+                isMainFrame: navigationAction.targetFrame?.isMainFrame ?? false,
+                sourceURL: navigationAction.sourceFrame.request.url)
+
+            switch decision {
+            case .allowInWebView:
+                return .allow
+            case .startMobileAuth(let returnTo):
+                onLoginRequested?(returnTo)
+                return .cancel
+            case .openExternally:
+                Task { @MainActor in await UIApplication.shared.open(url) }
+                return .cancel
+            case .cancel:
                 return .cancel
             }
-
-            guard navigationAction.targetFrame?.isMainFrame != false else {
-                return url.scheme == "https" ? .allow : .cancel
-            }
-
-            guard url.scheme == "https" else {
-                return .cancel
-            }
-
-            guard let expectedHost else {
-                Task { @MainActor in
-                    await UIApplication.shared.open(url)
-                }
-                return .cancel
-            }
-
-            if url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame {
-                return .allow
-            }
-
-            // OAuth flows (for example Google) are full-page cross-origin redirects.
-            // Keep redirects, form submissions, and scripted navigations in the same
-            // WebView so the resulting session cookie stays in this data store.
-            if navigationAction.navigationType != .linkActivated {
-                return .allow
-            }
-
-            // A user can already be on an OAuth provider's page. Follow links within
-            // that external flow instead of bouncing to Safari mid-login.
-            if let currentHost = navigationAction.sourceFrame.request.url?.host,
-               currentHost.caseInsensitiveCompare(expectedHost) != .orderedSame {
-                return .allow
-            }
-
-            Task { @MainActor in
-                await UIApplication.shared.open(url)
-            }
-            return .cancel
         }
 
         func webView(
@@ -121,8 +93,16 @@ struct SchoolSiteWebView: UIViewRepresentable {
             for navigationAction: WKNavigationAction,
             windowFeatures: WKWindowFeatures
         ) -> WKWebView? {
-            if navigationAction.targetFrame == nil {
+            // No new window is ever created. A same-origin request is folded back into this web
+            // view; an off-origin https one goes to the system browser; anything else is dropped.
+            guard let policy, let url = navigationAction.request.url else { return nil }
+            switch policy.decideNewWindow(url: url) {
+            case .allowInWebView:
                 webView.load(navigationAction.request)
+            case .openExternally:
+                Task { @MainActor in await UIApplication.shared.open(url) }
+            default:
+                break
             }
             return nil
         }
@@ -161,22 +141,6 @@ struct SchoolSiteWebView: UIViewRepresentable {
             }
             onLoadingChanged(false)
             onFailure(error.localizedDescription)
-        }
-
-        /// The current page's site-relative path, to return to after signing in.
-        private func currentReturnPath(_ navigationAction: WKNavigationAction) -> String? {
-            guard let current = navigationAction.sourceFrame.request.url,
-                  let components = URLComponents(url: current, resolvingAgainstBaseURL: false),
-                  let host = current.host,
-                  let expectedHost,
-                  host.caseInsensitiveCompare(expectedHost) == .orderedSame else {
-                return nil
-            }
-            let path = components.path.isEmpty ? "/" : components.path
-            if let query = components.query, !query.isEmpty {
-                return path + "?" + query
-            }
-            return path
         }
     }
 }
