@@ -1,0 +1,20 @@
+name: Contracts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  contracts:
+    name: vendored v1 contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # Runs on Linux without Xcode: the contract this app decodes is checked on every change,
+      # long before there is a simulator build to run it against.
+      - run: node scripts/check-contracts.mjs

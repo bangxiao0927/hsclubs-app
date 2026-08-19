@@ -75,6 +75,22 @@ xcodebuild -project HSclubs.xcodeproj \
 
 App 只读取 Guiding Page 的聚合接口，不直接轮询学校。开发时可运行 `python3 scripts/verify_guide_data.py`，读取真实学校的权威 `/api/summary`，核对聚合接口中的身份、社团总数、分类和发布时间；演示学校使用保存的数据，因此会被明确跳过。学校独立部署和自主管理的边界见 [`docs/SYNC_ARCHITECTURE.md`](docs/SYNC_ARCHITECTURE.md)。
 
+## 跨仓库契约
+
+`contracts/v1/` 是学校模板、Guiding Page 和本 App 共用的 v1 契约，由
+[hsclubs-guiding-page](https://github.com/bangxiao0927/hsclubs-guiding-page) 发布并原样复制到这里：
+`/api/v1/summary`、`/.well-known/hsclubs-app.json`、`/api/v1/schools` 的 JSON Schema，固定 fixtures，
+以及移动认证的 PKCE 与一次性 code 测试向量。说明见
+[`contracts/v1/README.md`](contracts/v1/README.md)。
+
+```bash
+node scripts/check-contracts.mjs
+```
+
+该脚本逐文件校验本地副本与 `manifest.json` 的 sha-256 是否一致，并在 CI 中运行。契约只能在
+Guiding Page 修改后整目录复制过来；直接改这里的副本，三个仓库就会悄悄各走各的。App 侧针对这些
+fixtures 的解码测试随目录迁移一并加入。
+
 ## 许可证
 
 本项目使用 [Apache License 2.0](LICENSE)。
