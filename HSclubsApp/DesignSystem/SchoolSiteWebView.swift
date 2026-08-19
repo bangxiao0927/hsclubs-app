@@ -58,17 +58,35 @@ struct SchoolSiteWebView: UIViewRepresentable {
                 return .cancel
             }
 
-            guard
-                let expectedHost,
-                url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame
-            else {
+            guard let expectedHost else {
                 Task { @MainActor in
                     await UIApplication.shared.open(url)
                 }
                 return .cancel
             }
 
-            return .allow
+            if url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame {
+                return .allow
+            }
+
+            // OAuth flows (for example Google) are full-page cross-origin redirects.
+            // Keep redirects, form submissions, and scripted navigations in the same
+            // WebView so the resulting session cookie stays in this data store.
+            if navigationAction.navigationType != .linkActivated {
+                return .allow
+            }
+
+            // A user can already be on an OAuth provider's page. Follow links within
+            // that external flow instead of bouncing to Safari mid-login.
+            if let currentHost = navigationAction.sourceFrame.request.url?.host,
+               currentHost.caseInsensitiveCompare(expectedHost) != .orderedSame {
+                return .allow
+            }
+
+            Task { @MainActor in
+                await UIApplication.shared.open(url)
+            }
+            return .cancel
         }
 
         func webView(

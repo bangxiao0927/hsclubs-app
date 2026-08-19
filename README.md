@@ -11,7 +11,7 @@ Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开�
 - 公开数据接口：`GET https://clubs.bangxiao.net/api/schools`
 - 接口当前可通过 HTTPS 访问，返回 `200 application/json`
 - 核心功能：按学校名或域名搜索、选择学校、记住上次选择、全屏打开学校站点和切换学校
-- 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；跨 origin 导航交由系统浏览器处理
+- 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；用户点击的外部链接交由系统浏览器处理，登录/OAuth 等跨源重定向和表单提交保留在 WebView 内以维持会话
 - `/api/status` 是运维接口并受 Basic Auth 保护，不属于普通 iOS 客户端功能
 - 数据是只读公开摘要，不包含登录、成员资料或社团管理功能
 
