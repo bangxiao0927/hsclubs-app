@@ -41,6 +41,13 @@
 		DE0000000000000000000004 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000003 /* AppDirectory.swift */; };
 		DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */; };
 		DE0000000000000000000008 /* app-directory-full.json in Resources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000007 /* app-directory-full.json */; };
+		DF0000000000000000000012 /* MobileAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000011 /* MobileAuthController.swift */; };
+		DF0000000000000000000014 /* MobileAuthCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000013 /* MobileAuthCallback.swift */; };
+		DF0000000000000000000016 /* PendingAuthFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000015 /* PendingAuthFlow.swift */; };
+		DF0000000000000000000018 /* MobileAuthFlowStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000017 /* MobileAuthFlowStore.swift */; };
+		DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000021 /* MobileAuthCallbackTests.swift */; };
+		DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */; };
+		DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000025 /* MobileAuthControllerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +111,14 @@
 		DE0000000000000000000003 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
 		DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectoryDecodingTests.swift; sourceTree = "<group>"; };
 		DE0000000000000000000007 /* app-directory-full.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "app-directory-full.json"; sourceTree = "<group>"; };
+		DF0000000000000000000011 /* MobileAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthController.swift; sourceTree = "<group>"; };
+		DF0000000000000000000013 /* MobileAuthCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthCallback.swift; sourceTree = "<group>"; };
+		DF0000000000000000000015 /* PendingAuthFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAuthFlow.swift; sourceTree = "<group>"; };
+		DF0000000000000000000017 /* MobileAuthFlowStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthFlowStore.swift; sourceTree = "<group>"; };
+		DF0000000000000000000019 /* HSclubs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HSclubs.entitlements; sourceTree = "<group>"; };
+		DF0000000000000000000021 /* MobileAuthCallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthCallbackTests.swift; sourceTree = "<group>"; };
+		DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthFlowStoreTests.swift; sourceTree = "<group>"; };
+		DF0000000000000000000025 /* MobileAuthControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthControllerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -222,6 +237,7 @@
 		9BEF1A8D881CDBF14877EB4D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000020 /* MobileAuth */,
 				BDFE8CBFAA0F85B9A74B6012 /* Models */,
 				AA345AD3799B386AA354B4D5 /* Networking */,
 				C9D7790C78AEC345057FC451 /* Persistence */,
@@ -259,6 +275,7 @@
 		B1C246C6527BF993F1AA82AB /* HSclubsAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000027 /* MobileAuth */,
 				E666C5B6BB5F6E477E1F1367 /* AppEnvironmentTests.swift */,
 				CD975521428276684C4B5B5C /* App */,
 				9B1ACB52C2A3C0FFDF96085E /* Directory */,
@@ -330,6 +347,8 @@
 		EFA0DDE5A4287F72A0EEC43E /* App */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000011 /* MobileAuthController.swift */,
+				DF0000000000000000000019 /* HSclubs.entitlements */,
 				8365CBA07145755638C4C4C3 /* AppEnvironment.swift */,
 				308E62B6A2B52699AC1D5409 /* HSclubsApp.swift */,
 				FE16A1C93A65D323ADA7F2BB /* Info.plist */,
@@ -338,6 +357,26 @@
 				9E0B87EB5B91CA14672FA04D /* UITestDependencies.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		DF0000000000000000000020 /* MobileAuth */ = {
+			isa = PBXGroup;
+			children = (
+				DF0000000000000000000013 /* MobileAuthCallback.swift */,
+				DF0000000000000000000017 /* MobileAuthFlowStore.swift */,
+				DF0000000000000000000015 /* PendingAuthFlow.swift */,
+			);
+			path = MobileAuth;
+			sourceTree = "<group>";
+		};
+		DF0000000000000000000027 /* MobileAuth */ = {
+			isa = PBXGroup;
+			children = (
+				DF0000000000000000000021 /* MobileAuthCallbackTests.swift */,
+				DF0000000000000000000025 /* MobileAuthControllerTests.swift */,
+				DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */,
+			);
+			path = MobileAuth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -456,6 +495,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000012 /* MobileAuthController.swift in Sources */,
+				DF0000000000000000000014 /* MobileAuthCallback.swift in Sources */,
+				DF0000000000000000000016 /* PendingAuthFlow.swift in Sources */,
+				DF0000000000000000000018 /* MobileAuthFlowStore.swift in Sources */,
 				DE0000000000000000000002 /* DirectorySchool.swift in Sources */,
 				DE0000000000000000000004 /* AppDirectory.swift in Sources */,
 				6C63EA98AC61DAF38D158B53 /* AppEnvironment.swift in Sources */,
@@ -482,6 +525,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */,
+				DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */,
+				DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */,
 				DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */,
 				361668D421032F2C29EB2CC2 /* AppEnvironmentTests.swift in Sources */,
 				85DC6118B35F6DA8E31C2A37 /* DirectoryQueryTests.swift in Sources */,
@@ -528,6 +574,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
+				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -722,6 +769,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
+				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -742,6 +790,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
+				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

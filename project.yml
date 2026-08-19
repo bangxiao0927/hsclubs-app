@@ -23,6 +23,11 @@ targets:
     platform: iOS
     sources:
       - path: HSclubsApp
+    entitlements:
+      path: HSclubsApp/App/HSclubs.entitlements
+      properties:
+        com.apple.developer.associated-domains:
+          - applinks:clubs.bangxiao.net
     info:
       path: HSclubsApp/App/Info.plist
       properties:
