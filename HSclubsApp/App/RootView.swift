@@ -26,30 +26,22 @@ struct RootView: View {
                 model.clearSearch()
             }
         }
-        .onChange(of: unresolvableSelection) { _, isUnresolvable in
-            if isUnresolvable {
-                schoolSelection.clear()
+        .onChange(of: model.directory) { _, directory in
+            // Reconcile once the directory changes: migrate a legacy slug to an id, or drop a
+            // selection that has vanished or turned not-openable. Done here rather than in a
+            // computed property so the migration writes through exactly once per load.
+            if let directory {
+                _ = schoolSelection.reconcile(with: directory)
             }
         }
     }
 
-    private var selectedSchool: (school: School, siteURL: URL)? {
+    private var selectedSchool: (school: DirectorySchool, siteURL: URL)? {
         guard
-            let selectedSlug = schoolSelection.selectedSlug,
-            let school = model.payload?.schools.first(where: { $0.slug == selectedSlug }),
-            let siteURL = school.verifiedSiteURL
+            let selectedSchoolId = schoolSelection.selectedSchoolId,
+            let school = model.directory?.schools.first(where: { $0.schoolId == selectedSchoolId }),
+            let siteURL = school.enterableURL
         else { return nil }
         return (school, siteURL)
-    }
-
-    /// A remembered school that the current payload no longer verifies must not silently
-    /// reappear later and replace the directory while the user is browsing it.
-    private var unresolvableSelection: Bool {
-        guard
-            let selectedSlug = schoolSelection.selectedSlug,
-            let schools = model.payload?.schools
-        else { return false }
-
-        return !schools.contains { $0.slug == selectedSlug && $0.verifiedSiteURL != nil }
     }
 }

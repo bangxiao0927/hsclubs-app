@@ -7,7 +7,7 @@ final class DirectoryViewModel {
     private let repository: SchoolsRepository
     private var hasLoaded = false
 
-    private(set) var payload: PagePayload?
+    private(set) var directory: AppDirectory?
     private(set) var cachedAt: Date?
     private(set) var errorMessage: String?
     private(set) var isLoading = true
@@ -18,9 +18,9 @@ final class DirectoryViewModel {
         self.repository = repository
     }
 
-    var schools: [School] {
+    var schools: [DirectorySchool] {
         DirectoryQuery.sortedByName(
-            DirectoryQuery.search(payload?.schools ?? [], query: query)
+            DirectoryQuery.search(directory?.schools ?? [], query: query)
         )
     }
 
@@ -40,34 +40,34 @@ final class DirectoryViewModel {
     }
 
     private func load() async {
-        isLoading = payload == nil
-        isRefreshing = payload != nil
+        isLoading = directory == nil
+        isRefreshing = directory != nil
         errorMessage = nil
 
-        var pendingCache: (payload: PagePayload, savedAt: Date)?
+        var pendingCache: (directory: AppDirectory, savedAt: Date)?
         let events = await repository.events()
         for await event in events {
             switch event {
-            case .cacheLoaded(let cachedPayload, let savedAt):
-                pendingCache = (cachedPayload, savedAt)
-                if payload == nil {
-                    payload = cachedPayload
+            case .cacheLoaded(let cachedDirectory, let savedAt):
+                pendingCache = (cachedDirectory, savedAt)
+                if directory == nil {
+                    directory = cachedDirectory
                     cachedAt = savedAt
                     isLoading = false
                     isRefreshing = true
                 }
-            case .networkSucceeded(let freshPayload):
-                payload = freshPayload
+            case .networkSucceeded(let freshDirectory):
+                directory = freshDirectory
                 cachedAt = nil
                 errorMessage = nil
             case .networkFailed(let error):
-                if payload == nil, let pendingCache {
-                    payload = pendingCache.payload
+                if directory == nil, let pendingCache {
+                    directory = pendingCache.directory
                 }
                 if let pendingCache {
                     cachedAt = pendingCache.savedAt
                 }
-                errorMessage = error.userMessage(hasCachedData: payload != nil)
+                errorMessage = error.userMessage(hasCachedData: directory != nil)
             }
         }
 

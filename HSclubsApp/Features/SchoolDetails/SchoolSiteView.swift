@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct SchoolSiteView: View {
-    let school: School
+    let school: DirectorySchool
     let siteURL: URL
     @Bindable var schoolSelection: SchoolSelection
 
     @State private var isLoading = false
     @State private var failureMessage: String?
 
-    init(school: School, siteURL: URL, schoolSelection: SchoolSelection) {
+    init(school: DirectorySchool, siteURL: URL, schoolSelection: SchoolSelection) {
         self.school = school
         self.siteURL = siteURL
         self.schoolSelection = schoolSelection
@@ -52,7 +52,7 @@ struct SchoolSiteView: View {
 }
 
 private struct FloatingSchoolButton: View {
-    let school: School
+    let school: DirectorySchool
     @Bindable var schoolSelection: SchoolSelection
 
     @State private var dragTranslation = CGSize.zero

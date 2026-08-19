@@ -3,19 +3,19 @@ import Testing
 @testable import HSclubs
 
 struct SchoolsRepositoryTests {
-    private func payloadData(title: String) -> Data {
+    private func directoryData(generatedAt: String) -> Data {
         Data("""
         {
-          "title": "\(title)",
-          "generatedAt": "2024-05-01T12:00:00Z",
-          "totals": { "schools": 0, "clubs": 0, "checkedAge": null },
+          "contract": "hsclubs.app-directory",
+          "version": 1,
+          "generatedAt": "\(generatedAt)",
           "schools": []
         }
         """.utf8)
     }
 
     @Test func emitsNetworkResultWhenNoCacheIsPresent() async throws {
-        let networkData = payloadData(title: "From Network")
+        let networkData = directoryData(generatedAt: "2024-05-01T12:00:00Z")
         let api = FakeSchoolsAPI(outcome: .success(networkData))
         let cache = FakeSchoolsCache()
         let repository = SchoolsRepository(api: api, cache: cache)
@@ -26,22 +26,22 @@ struct SchoolsRepositoryTests {
         }
 
         #expect(events.count == 1)
-        guard case .networkSucceeded(let payload) = events[0] else {
+        guard case .networkSucceeded(let directory) = events[0] else {
             Issue.record("expected .networkSucceeded, got \(events[0])")
             return
         }
-        #expect(payload.title == "From Network")
+        #expect(directory.schools.isEmpty)
 
         let stored = await cache.currentValue()
         #expect(stored?.data == networkData)
     }
 
     @Test func emitsCachedContentBeforeNetworkResult() async throws {
-        let cachedData = payloadData(title: "From Cache")
+        let cachedData = directoryData(generatedAt: "2024-04-01T12:00:00Z")
         let cachedAt = Date(timeIntervalSince1970: 1_700_000_000)
-        let cache = FakeSchoolsCache(stored: CachedSchoolsPageData(data: cachedData, savedAt: cachedAt))
+        let cache = FakeSchoolsCache(stored: CachedDirectoryData(data: cachedData, savedAt: cachedAt))
 
-        let networkData = payloadData(title: "From Network")
+        let networkData = directoryData(generatedAt: "2024-05-01T12:00:00Z")
         let api = FakeSchoolsAPI(outcome: .success(networkData))
         let repository = SchoolsRepository(api: api, cache: cache)
 
@@ -51,27 +51,27 @@ struct SchoolsRepositoryTests {
         }
 
         #expect(events.count == 2)
-        guard case .cacheLoaded(let cachedPayload, let savedAt) = events[0] else {
+        guard case .cacheLoaded(let cachedDirectory, let savedAt) = events[0] else {
             Issue.record("expected .cacheLoaded first, got \(events[0])")
             return
         }
-        #expect(cachedPayload.title == "From Cache")
+        #expect(cachedDirectory.generatedAt == ISO8601DateFormatter().date(from: "2024-04-01T12:00:00Z"))
         #expect(savedAt == cachedAt)
 
-        guard case .networkSucceeded(let networkPayload) = events[1] else {
+        guard case .networkSucceeded(let networkDirectory) = events[1] else {
             Issue.record("expected .networkSucceeded second, got \(events[1])")
             return
         }
-        #expect(networkPayload.title == "From Network")
+        #expect(networkDirectory.generatedAt == ISO8601DateFormatter().date(from: "2024-05-01T12:00:00Z"))
 
         let stored = await cache.currentValue()
         #expect(stored?.data == networkData)
     }
 
     @Test func preservesCacheWhenNetworkRefreshFails() async throws {
-        let cachedData = payloadData(title: "From Cache")
+        let cachedData = directoryData(generatedAt: "2024-04-01T12:00:00Z")
         let cachedAt = Date(timeIntervalSince1970: 1_700_000_000)
-        let cache = FakeSchoolsCache(stored: CachedSchoolsPageData(data: cachedData, savedAt: cachedAt))
+        let cache = FakeSchoolsCache(stored: CachedDirectoryData(data: cachedData, savedAt: cachedAt))
 
         let api = FakeSchoolsAPI(outcome: .failure(.httpStatus(503)))
         let repository = SchoolsRepository(api: api, cache: cache)
@@ -98,9 +98,9 @@ struct SchoolsRepositoryTests {
     }
 
     @Test func reportsInvalidNetworkJSONWithoutReplacingCache() async throws {
-        let cachedData = payloadData(title: "From Cache")
+        let cachedData = directoryData(generatedAt: "2024-04-01T12:00:00Z")
         let cachedAt = Date(timeIntervalSince1970: 1_700_000_000)
-        let cache = FakeSchoolsCache(stored: CachedSchoolsPageData(data: cachedData, savedAt: cachedAt))
+        let cache = FakeSchoolsCache(stored: CachedDirectoryData(data: cachedData, savedAt: cachedAt))
         let api = FakeSchoolsAPI(outcome: .success(Data("<html>maintenance</html>".utf8)))
         let repository = SchoolsRepository(api: api, cache: cache)
 

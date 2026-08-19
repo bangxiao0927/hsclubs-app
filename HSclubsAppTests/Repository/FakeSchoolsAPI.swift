@@ -17,7 +17,7 @@ actor FakeSchoolsAPI: SchoolsAPI {
         self.outcome = outcome
     }
 
-    func fetchSchoolsPageData() async throws -> Data {
+    func fetchDirectoryData() async throws -> Data {
         switch outcome {
         case .success(let data):
             return data

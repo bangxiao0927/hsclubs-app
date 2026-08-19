@@ -1,20 +1,20 @@
 import Foundation
 
 enum SchoolsRepositoryEvent: Sendable {
-    case cacheLoaded(PagePayload, savedAt: Date)
-    case networkSucceeded(PagePayload)
+    case cacheLoaded(AppDirectory, savedAt: Date)
+    case networkSucceeded(AppDirectory)
     case networkFailed(SchoolsAPIError)
 }
 
 actor SchoolsRepository {
     private let api: SchoolsAPI
     private let cache: SchoolsCache
-    private let decode: @Sendable (Data) throws -> PagePayload
+    private let decode: @Sendable (Data) throws -> AppDirectory
 
     init(
         api: SchoolsAPI,
         cache: SchoolsCache,
-        decode: @escaping @Sendable (Data) throws -> PagePayload = SchoolsPageDecoder.decode
+        decode: @escaping @Sendable (Data) throws -> AppDirectory = AppDirectoryDecoder.decode
     ) {
         self.api = api
         self.cache = cache
@@ -29,8 +29,8 @@ actor SchoolsRepository {
                 }
 
                 do {
-                    let data = try await api.fetchSchoolsPageData()
-                    let payload: PagePayload
+                    let data = try await api.fetchDirectoryData()
+                    let payload: AppDirectory
                     do {
                         payload = try decode(data)
                     } catch {

@@ -11,7 +11,8 @@ struct HSclubsApp: App {
         if arguments.contains("--ui-testing-empty") || arguments.contains("--ui-testing-sample") {
             let storage = UserDefaults(suiteName: "net.hsclubs.app.uitests")!
             if arguments.contains("--ui-testing-reset") {
-                storage.removeObject(forKey: SchoolSelection.storageKey)
+                storage.removeObject(forKey: SchoolSelection.selectionKey)
+                storage.removeObject(forKey: SchoolSelection.legacySlugKey)
             }
             _schoolSelection = State(initialValue: SchoolSelection(storage: storage))
         }

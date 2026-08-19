@@ -80,6 +80,18 @@ final class HSclubsAppUITests: XCTestCase {
     }
 
     @MainActor
+    func testIncompatibleSchoolIsVisibleButNotEnterable() {
+        let app = launchSampleDirectory()
+        let incompatible = app.buttons["school-card-gamma"]
+        XCTAssertTrue(incompatible.waitForExistence(timeout: 5))
+        // Visible, but the guiding page marked it incompatible: the row is disabled and tapping
+        // it must not open a site.
+        XCTAssertFalse(incompatible.isEnabled)
+        incompatible.tap()
+        XCTAssertFalse(app.webViews.firstMatch.waitForExistence(timeout: 2))
+    }
+
+    @MainActor
     private func launchSampleDirectory() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["--ui-testing-sample", "--ui-testing-reset"]

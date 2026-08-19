@@ -7,10 +7,10 @@ struct DirectoryView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if model.isLoading, model.payload == nil {
+                if model.isLoading, model.directory == nil {
                     loadingView
-                } else if let payload = model.payload {
-                    directory(payload)
+                } else if let directory = model.directory {
+                    directoryList(directory)
                 } else {
                     failureView
                 }
@@ -42,7 +42,7 @@ struct DirectoryView: View {
         }
     }
 
-    private func directory(_ payload: PagePayload) -> some View {
+    private func directoryList(_ directory: AppDirectory) -> some View {
         let results = model.schools
 
         return ScrollView {
@@ -59,7 +59,7 @@ struct DirectoryView: View {
                     )
                 }
 
-                if payload.schools.isEmpty {
+                if directory.schools.isEmpty {
                     ContentUnavailableView(
                         "No schools yet",
                         systemImage: "building.2",
@@ -70,15 +70,15 @@ struct DirectoryView: View {
                     ContentUnavailableView.search(text: model.query)
                         .frame(minHeight: 360)
                 } else {
-                    ForEach(results, id: \.slug) { school in
+                    ForEach(results) { school in
                         Button {
-                            guard school.verifiedSiteURL != nil else { return }
+                            guard school.enterableURL != nil else { return }
                             schoolSelection.select(school)
                         } label: {
                             SchoolRow(school: school)
                         }
                         .buttonStyle(.plain)
-                        .disabled(school.verifiedSiteURL == nil)
+                        .disabled(school.enterableURL == nil)
                         .accessibilityIdentifier("school-card-\(school.slug)")
                     }
                 }
@@ -102,7 +102,7 @@ struct DirectoryView: View {
 }
 
 private struct SchoolRow: View {
-    let school: School
+    let school: DirectorySchool
 
     var body: some View {
         HStack(spacing: 14) {
@@ -114,7 +114,7 @@ private struct SchoolRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
-                    Text(school.schoolName)
+                    Text(school.name)
                         .font(.headline)
                     if school.demo {
                         Text("Demo")
@@ -122,20 +122,31 @@ private struct SchoolRow: View {
                             .foregroundStyle(.purple)
                     }
                 }
-                if let host = school.host {
-                    Text(host)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                Text(school.host)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                if school.enterableURL == nil {
+                    // An incompatible school stays visible so a misconfiguration is not invisible,
+                    // but says why and cannot be opened.
+                    Label(
+                        school.unavailableReason ?? "Unavailable right now",
+                        systemImage: "exclamationmark.triangle"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.orange)
                 }
             }
 
             Spacer()
-            Image(systemName: "chevron.forward")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.tertiary)
+            if school.enterableURL != nil {
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
         }
         .padding(16)
         .background(.background, in: RoundedRectangle(cornerRadius: 16))
+        .opacity(school.enterableURL == nil ? 0.6 : 1)
         .accessibilityElement(children: .combine)
     }
 }

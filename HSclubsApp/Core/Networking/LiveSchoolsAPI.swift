@@ -14,13 +14,15 @@ actor LiveSchoolsAPI: SchoolsAPI {
         session: URLSession = .shared,
         maxResponseBytes: Int = LiveSchoolsAPI.defaultMaxResponseBytes
     ) {
-        self.endpoint = baseURL.appendingPathComponent("api/schools")
+        // The versioned directory, not the browser's /api/schools: the app reads the minimal
+        // projection meant for it, and stays uncoupled from the fields the web page draws.
+        self.endpoint = baseURL.appendingPathComponent("api/v1/schools")
         self.expectedHost = expectedHost
         self.session = session
         self.maxResponseBytes = maxResponseBytes
     }
 
-    func fetchSchoolsPageData() async throws -> Data {
+    func fetchDirectoryData() async throws -> Data {
         guard endpoint.scheme == "https" else {
             throw SchoolsAPIError.insecureBaseURL
         }

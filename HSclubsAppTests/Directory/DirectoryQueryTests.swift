@@ -28,24 +28,20 @@ struct DirectoryQueryTests {
         ])
     }
 
-    private func school(_ slug: String, name: String, host: String? = nil) -> School {
-        School(
+    private func school(_ slug: String, name: String, host: String = "example.test") -> DirectorySchool {
+        DirectorySchool(
+            schoolId: "sch_\(slug)000000000000",
             slug: slug,
-            siteUrl: nil,
+            name: name,
+            shortName: nil,
+            siteOrigin: URL(string: "https://\(host)")!,
             host: host,
             demo: false,
-            status: .live,
-            schoolName: name,
-            address: nil,
+            integrationStatus: .compatible,
+            unavailableReason: nil,
             clubCount: nil,
-            publishedAge: nil,
-            changedAge: nil,
-            checkedAge: nil,
-            publishedAt: nil,
             lastUpdatedAt: nil,
-            trend: nil,
-            lastPolledAt: nil,
-            lastError: nil
+            mobileAuth: false
         )
     }
 }

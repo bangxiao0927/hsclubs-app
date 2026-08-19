@@ -1,7 +1,7 @@
 import Foundation
 
 protocol SchoolsAPI: Sendable {
-    func fetchSchoolsPageData() async throws -> Data
+    func fetchDirectoryData() async throws -> Data
 }
 
 enum SchoolsAPIError: Error, Sendable, Equatable {
