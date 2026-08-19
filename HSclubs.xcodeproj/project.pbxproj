@@ -41,13 +41,11 @@
 		DE0000000000000000000004 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000003 /* AppDirectory.swift */; };
 		DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */; };
 		DE0000000000000000000008 /* app-directory-full.json in Resources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000007 /* app-directory-full.json */; };
-		DF0000000000000000000012 /* MobileAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000011 /* MobileAuthController.swift */; };
 		DF0000000000000000000014 /* MobileAuthCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000013 /* MobileAuthCallback.swift */; };
 		DF0000000000000000000016 /* PendingAuthFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000015 /* PendingAuthFlow.swift */; };
 		DF0000000000000000000018 /* MobileAuthFlowStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000017 /* MobileAuthFlowStore.swift */; };
 		DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000021 /* MobileAuthCallbackTests.swift */; };
 		DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */; };
-		DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000025 /* MobileAuthControllerTests.swift */; };
 		DF0000000000000000000029 /* MobileAuthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000028 /* MobileAuthConfig.swift */; };
 		DF0000000000000000000031 /* MobileAuthPkce.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000030 /* MobileAuthPkce.swift */; };
 		DF0000000000000000000033 /* WebAuthenticating.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000032 /* WebAuthenticating.swift */; };
@@ -121,14 +119,12 @@
 		DE0000000000000000000003 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
 		DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectoryDecodingTests.swift; sourceTree = "<group>"; };
 		DE0000000000000000000007 /* app-directory-full.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "app-directory-full.json"; sourceTree = "<group>"; };
-		DF0000000000000000000011 /* MobileAuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthController.swift; sourceTree = "<group>"; };
 		DF0000000000000000000013 /* MobileAuthCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthCallback.swift; sourceTree = "<group>"; };
 		DF0000000000000000000015 /* PendingAuthFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingAuthFlow.swift; sourceTree = "<group>"; };
 		DF0000000000000000000017 /* MobileAuthFlowStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthFlowStore.swift; sourceTree = "<group>"; };
 		DF0000000000000000000019 /* HSclubs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HSclubs.entitlements; sourceTree = "<group>"; };
 		DF0000000000000000000021 /* MobileAuthCallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthCallbackTests.swift; sourceTree = "<group>"; };
 		DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthFlowStoreTests.swift; sourceTree = "<group>"; };
-		DF0000000000000000000025 /* MobileAuthControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthControllerTests.swift; sourceTree = "<group>"; };
 		DF0000000000000000000028 /* MobileAuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthConfig.swift; sourceTree = "<group>"; };
 		DF0000000000000000000030 /* MobileAuthPkce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthPkce.swift; sourceTree = "<group>"; };
 		DF0000000000000000000032 /* WebAuthenticating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAuthenticating.swift; sourceTree = "<group>"; };
@@ -370,7 +366,6 @@
 		EFA0DDE5A4287F72A0EEC43E /* App */ = {
 			isa = PBXGroup;
 			children = (
-				DF0000000000000000000011 /* MobileAuthController.swift */,
 				DF0000000000000000000019 /* HSclubs.entitlements */,
 				8365CBA07145755638C4C4C3 /* AppEnvironment.swift */,
 				308E62B6A2B52699AC1D5409 /* HSclubsApp.swift */,
@@ -403,7 +398,6 @@
 				DF0000000000000000000040 /* MobileAuthPkceTests.swift */,
 				DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */,
 				DF0000000000000000000021 /* MobileAuthCallbackTests.swift */,
-				DF0000000000000000000025 /* MobileAuthControllerTests.swift */,
 				DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */,
 			);
 			path = MobileAuth;
@@ -540,7 +534,6 @@
 				DF0000000000000000000035 /* SchoolSessionCompleting.swift in Sources */,
 				DF0000000000000000000037 /* MobileAuthLoginController.swift in Sources */,
 				DF0000000000000000000039 /* SchoolWebSession.swift in Sources */,
-				DF0000000000000000000012 /* MobileAuthController.swift in Sources */,
 				DF0000000000000000000014 /* MobileAuthCallback.swift in Sources */,
 				DF0000000000000000000016 /* PendingAuthFlow.swift in Sources */,
 				DF0000000000000000000018 /* MobileAuthFlowStore.swift in Sources */,
@@ -575,7 +568,6 @@
 				DF0000000000000000000043 /* MobileAuthLoginControllerTests.swift in Sources */,
 				DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */,
 				DF0000000000000000000024 /* MobileAuthFlowStoreTests.swift in Sources */,
-				DF0000000000000000000026 /* MobileAuthControllerTests.swift in Sources */,
 				DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */,
 				361668D421032F2C29EB2CC2 /* AppEnvironmentTests.swift in Sources */,
 				85DC6118B35F6DA8E31C2A37 /* DirectoryQueryTests.swift in Sources */,

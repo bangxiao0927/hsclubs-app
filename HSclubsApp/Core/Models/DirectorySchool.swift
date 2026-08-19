@@ -67,9 +67,21 @@ struct DirectorySchool: Sendable, Equatable, Identifiable {
         guard
             isEnterable,
             siteOrigin.scheme == "https",
-            siteOrigin.host?.caseInsensitiveCompare(host) == .orderedSame
+            DirectorySchool.hostAndPort(of: siteOrigin)?.caseInsensitiveCompare(host) == .orderedSame
         else { return nil }
         return siteOrigin
+    }
+
+    /// The host with its port when the origin carries one, matching the guiding page's `host`
+    /// field (which is derived from the same origin). Comparing bare `URL.host` -- which never
+    /// includes the port -- against a `host` like `school.example:8443` would reject a legitimate
+    /// school that runs on a non-default port.
+    static func hostAndPort(of url: URL) -> String? {
+        guard let host = url.host else { return nil }
+        if let port = url.port {
+            return "\(host):\(port)"
+        }
+        return host
     }
 }
 

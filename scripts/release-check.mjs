@@ -20,6 +20,13 @@ const getJson = async (url) => {
   return response.json()
 }
 
+// A GET that only needs to reach the server; a redirect counts as reachable.
+const reach = async (url) => {
+  const response = await fetch(url, { redirect: 'manual' })
+  const status = response.status
+  return { ok: status < 400 || (status >= 300 && status < 400), status }
+}
+
 // The Universal Link association must name the production app and the callback path.
 const checkAppSiteAssociation = async () => {
   try {
@@ -59,6 +66,34 @@ const checkSchool = async (school) => {
   if (manifest.auth?.mobile?.supported !== true) fail(label, 'manifest does not support mobile auth')
   if (manifest.auth?.mobile?.callbackUrl !== officialCallback) fail(label, 'manifest callback is not the official Universal Link')
 
+  // Root page: the school's own site must load, since the app opens it in a web view.
+  try {
+    const root = await reach(school.siteOrigin)
+    if (!root.ok) fail(label, `root page answered ${root.status}`)
+  } catch (error) {
+    fail(label, `root page unreachable: ${error.message}`)
+  }
+
+  // Mobile-auth entry: a bare GET must exist and answer with the contract's error shape (it is
+  // missing every required parameter), which proves the endpoint is wired without starting a real
+  // sign-in. A 2xx/3xx here would mean the endpoint is not validating its input.
+  try {
+    const response = await fetch(`${school.siteOrigin}/api/mobile-auth/start`, {
+      headers: { accept: 'application/json' },
+      redirect: 'manual',
+    })
+    if (response.status < 400) {
+      fail(label, `mobile-auth start did not reject an empty request (status ${response.status})`)
+    } else {
+      const body = await response.json().catch(() => ({}))
+      if (body.contract !== 'hsclubs.mobile-auth-error') {
+        fail(label, 'mobile-auth start did not answer with the contract error shape')
+      }
+    }
+  } catch (error) {
+    fail(label, `mobile-auth start unreachable: ${error.message}`)
+  }
+
   // Summary: identity agrees.
   try {
     const summary = await getJson(`${school.siteOrigin}/api/v1/summary`)
@@ -89,6 +124,7 @@ const main = async () => {
     process.exit(1)
   }
   console.log(`Release gate passed: ${realSchools.length} real school(s) ready.`)
+  console.log('Note: Google sign-in and WKWebView session recovery are covered by the E2E gate, not this check.')
 }
 
 main().catch((error) => {

@@ -108,4 +108,24 @@ struct AppDirectoryDecodingTests {
         )
         #expect(insecure.enterableURL == nil)
     }
+
+    // A school on a non-default port publishes host:port in the directory; the enterable check must
+    // compare host and port together, not the bare host, or it would reject a legitimate school.
+    @Test func acceptsAnHTTPSOriginOnANonDefaultPort() {
+        let ported = DirectorySchool(
+            schoolId: "sch_portedHHHHHHHHHHHH",
+            slug: "ported",
+            name: "Ported",
+            shortName: nil,
+            siteOrigin: URL(string: "https://school.example:8443")!,
+            host: "school.example:8443",
+            demo: false,
+            integrationStatus: .compatible,
+            unavailableReason: nil,
+            clubCount: nil,
+            lastUpdatedAt: nil,
+            mobileAuth: false
+        )
+        #expect(ported.enterableURL == URL(string: "https://school.example:8443"))
+    }
 }
