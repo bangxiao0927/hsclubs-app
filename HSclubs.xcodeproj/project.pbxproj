@@ -56,6 +56,8 @@
 		DF0000000000000000000039 /* SchoolWebSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000038 /* SchoolWebSession.swift */; };
 		DF0000000000000000000041 /* MobileAuthPkceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000040 /* MobileAuthPkceTests.swift */; };
 		DF0000000000000000000043 /* MobileAuthLoginControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */; };
+		DF0000000000000000000045 /* SchoolSiteNavigationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000044 /* SchoolSiteNavigationPolicy.swift */; };
+		DF0000000000000000000047 /* SchoolSiteNavigationPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF0000000000000000000046 /* SchoolSiteNavigationPolicyTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +137,8 @@
 		DF0000000000000000000038 /* SchoolWebSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolWebSession.swift; sourceTree = "<group>"; };
 		DF0000000000000000000040 /* MobileAuthPkceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthPkceTests.swift; sourceTree = "<group>"; };
 		DF0000000000000000000042 /* MobileAuthLoginControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthLoginControllerTests.swift; sourceTree = "<group>"; };
+		DF0000000000000000000044 /* SchoolSiteNavigationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSiteNavigationPolicy.swift; sourceTree = "<group>"; };
+		DF0000000000000000000046 /* SchoolSiteNavigationPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSiteNavigationPolicyTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -195,6 +199,7 @@
 		471717814798E32862D6EF08 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000044 /* SchoolSiteNavigationPolicy.swift */,
 				A2680D361DF298C115DA21B5 /* .gitkeep */,
 				CCC902E1253D32028A229504 /* SchoolSiteWebView.swift */,
 			);
@@ -291,6 +296,7 @@
 		B1C246C6527BF993F1AA82AB /* HSclubsAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				DF0000000000000000000048 /* DesignSystem */,
 				DF0000000000000000000027 /* MobileAuth */,
 				E666C5B6BB5F6E477E1F1367 /* AppEnvironmentTests.swift */,
 				CD975521428276684C4B5B5C /* App */,
@@ -401,6 +407,14 @@
 				DF0000000000000000000023 /* MobileAuthFlowStoreTests.swift */,
 			);
 			path = MobileAuth;
+			sourceTree = "<group>";
+		};
+		DF0000000000000000000048 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				DF0000000000000000000046 /* SchoolSiteNavigationPolicyTests.swift */,
+			);
+			path = DesignSystem;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -519,6 +533,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000045 /* SchoolSiteNavigationPolicy.swift in Sources */,
 				DF0000000000000000000029 /* MobileAuthConfig.swift in Sources */,
 				DF0000000000000000000031 /* MobileAuthPkce.swift in Sources */,
 				DF0000000000000000000033 /* WebAuthenticating.swift in Sources */,
@@ -555,6 +570,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0000000000000000000047 /* SchoolSiteNavigationPolicyTests.swift in Sources */,
 				DF0000000000000000000041 /* MobileAuthPkceTests.swift in Sources */,
 				DF0000000000000000000043 /* MobileAuthLoginControllerTests.swift in Sources */,
 				DF0000000000000000000022 /* MobileAuthCallbackTests.swift in Sources */,
