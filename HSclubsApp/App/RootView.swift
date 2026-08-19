@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @Bindable var model: DirectoryViewModel
     @Bindable var schoolSelection: SchoolSelection
+    @Bindable var mobileAuth: MobileAuthController
 
     var body: some View {
         Group {
@@ -33,6 +34,19 @@ struct RootView: View {
             if let directory {
                 _ = schoolSelection.reconcile(with: directory)
             }
+        }
+        // A recoverable mobile-auth failure (unknown/expired/mismatched state, or a provider
+        // error) is shown as a dismissible alert; acknowledging it clears the message.
+        .alert(
+            "Sign-in problem",
+            isPresented: Binding(
+                get: { mobileAuth.rejectionMessage != nil },
+                set: { presented in if !presented { mobileAuth.rejectionMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) { mobileAuth.rejectionMessage = nil }
+        } message: {
+            Text(mobileAuth.rejectionMessage ?? "")
         }
     }
 
