@@ -1,67 +1,85 @@
 # HSclubs iOS
 
-HSclubs iOS 是 [HSclubs Guiding Page](https://clubs.bangxiao.net) 的学校切换入口。用户搜索并选择已验证学校后，App 全屏打开该学校自己管理的站点。
+[中文](README.zh-CN.md)
 
-> 当前状态：已完成精简学校选择器、生产 API、离线缓存、全屏学校站点、上次学校记忆和悬浮切换入口。后续实施流程见 [iOS 开发流程](docs/IOS_DEVELOPMENT_PLAN.md)。
+HSclubs iOS is the school switcher for the
+[HSclubs Guiding Page](https://clubs.bangxiao.net). Somebody searches for a verified school,
+picks it, and the app opens that school's own site full screen.
 
-## 页面检查结论
+> Status: the trimmed school picker, the production API, the offline cache, the full-screen
+> school site, remembering the last school and the floating switcher are done. What comes next is
+> in the [iOS development plan](docs/IOS_DEVELOPMENT_PLAN.md).
 
-Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开摘要拉取数据，iOS 客户端只需要读取聚合服务，不应直接轮询每个学校，也不需要复制 Node.js poller。
+## What the guiding page actually is
 
-- 公开数据接口：`GET https://clubs.bangxiao.net/api/schools`
-- 接口当前可通过 HTTPS 访问，返回 `200 application/json`
-- 核心功能：按学校名或域名搜索、选择学校、记住上次选择、全屏打开学校站点和切换学校
-- 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；用户点击的外部链接交由系统浏览器处理，登录/OAuth 等跨源重定向和表单提交保留在 WebView 内以维持会话
-- `/api/status` 是运维接口并受 Basic Auth 保护，不属于普通 iOS 客户端功能
-- 数据是只读公开摘要，不包含登录、成员资料或社团管理功能
+A read-only aggregator. Its server polls each school's public summary on a schedule, so this app
+reads the aggregate and nothing else: it must not poll schools directly, and it does not need a
+copy of the Node.js poller.
 
-学校选择器使用 **SwiftUI 原生开发**。完整学校站点包含登录和管理会话，经 HTTPS/host 校验后作为全屏 `WKWebView` 交给学校自己的 Web 实现；悬浮切换按钮可拖动、贴边，点击后向屏幕内侧展开 `Switch School`，点击页面或稍等片刻会自动收回。
+- Public data endpoint: `GET https://clubs.bangxiao.net/api/schools`
+- Reachable over HTTPS today, answering `200 application/json`
+- Scope: search by school name or host, pick a school, remember the last one, open that school's
+  site full screen, and switch schools
+- A school's site comes from `siteUrl` and opens in a full-screen web view once the scheme and
+  host have been checked. Links the person taps out to elsewhere go to the system browser;
+  cross-origin redirects and form posts belonging to sign-in stay in the web view, because the
+  session does.
+- `/api/status` is an operations endpoint behind Basic Auth and is not part of this app
+- The data is a read-only public summary: no sign-in, no member profiles, no club administration
 
-## 建议技术栈
+The picker is native **SwiftUI**. A school's full site carries its own sign-in and management
+session, so after the HTTPS and host checks it is handed to a full-screen `WKWebView` and left to
+that school's web implementation. The floating switch button can be dragged, parks against an
+edge, expands inward to `Switch School` on a tap, and folds back when the page is tapped or after
+a moment.
 
-- iOS 17+、Xcode 16+、Swift 6
-- SwiftUI + Observation，使用轻量 MVVM/Feature 分层
+## Suggested stack
+
+- iOS 17+, Xcode 16+, Swift 6
+- SwiftUI + Observation, with light MVVM/feature layering
 - `URLSession` + `async/await` + `Codable`
-- Swift Charts 展示学校社团数量趋势
-- XCTest / Swift Testing，使用 URLProtocol stub 测试网络层
-- 不引入第三方依赖作为首版默认方案
+- Swift Charts for a school's club-count trend
+- XCTest / Swift Testing, with a `URLProtocol` stub for the networking layer
+- No third-party dependencies in the first version
 
-## MVP 范围
+## MVP scope
 
-1. 加载并展示学校总数、社团总数和最近检查时间。
-2. 展示学校卡片及 `live`、`stale`、`no-data`、`demo` 状态。
-3. 按学校名称或域名搜索；按分类进行交集筛选。
-4. 按名称、社团数量、更新时间排序。
-5. 在详情页展示地址、分类、趋势和数据更新时间，并安全打开学校官网。
-6. 支持下拉刷新、加载/空数据/失败状态以及最近一次成功数据的本地缓存。
-7. 支持深色模式、Dynamic Type、VoiceOver 和 Reduce Motion。
+1. Load and show the school total, the club total and when the data was last checked.
+2. Show school cards with `live`, `stale`, `no-data` and `demo` states.
+3. Search by school name or host; filter by category as an intersection.
+4. Sort by name, club count or last update.
+5. On the detail screen, show address, categories, trend and data age, and open the school's site
+   safely.
+6. Pull to refresh, loading/empty/failure states, and a local cache of the last successful load.
+7. Dark mode, Dynamic Type, VoiceOver and Reduce Motion.
 
-MVP 不包含登录、推送、后台高频刷新、社团编辑、学校注册和运维状态页面。
+Out of scope for the MVP: sign-in, push notifications, frequent background refresh, club editing,
+school registration and the operations status page.
 
-## 预期目录
+## Planned layout
 
 ```text
 HSclubsApp/
-  App/                 # App 入口与依赖装配
+  App/                 # entry point and dependency wiring
   Core/
-    Models/            # API Codable 模型
-    Networking/        # APIClient、错误映射
-    Persistence/       # 最近成功响应缓存
+    Models/            # Codable models for the API
+    Networking/        # APIClient, error mapping
+    Persistence/       # cache of the last successful response
   Features/
-    Directory/         # 总览、搜索、筛选、排序
-    SchoolDetails/     # 学校详情与趋势
-  DesignSystem/        # 颜色、字体和复用组件
+    Directory/         # totals, search, filtering, sorting
+    SchoolDetails/     # school detail and trend
+  DesignSystem/        # colours, type, shared components
 HSclubsAppTests/
 HSclubsAppUITests/
 ```
 
-## 开始开发
+## Getting started
 
-1. 使用 Xcode 16 或更高版本打开 `HSclubs.xcodeproj`。
-2. 选择共享的 `HSclubs` Scheme 和任意 iOS 17+ 模拟器后运行。
-3. 修改 `project.yml` 后执行 `xcodegen generate` 重新生成工程。
+1. Open `HSclubs.xcodeproj` with Xcode 16 or newer.
+2. Pick the shared `HSclubs` scheme and any iOS 17+ simulator, then run.
+3. After editing `project.yml`, run `xcodegen generate` to regenerate the project.
 
-命令行构建：
+From the command line:
 
 ```bash
 xcodebuild -project HSclubs.xcodeproj \
@@ -71,26 +89,35 @@ xcodebuild -project HSclubs.xcodeproj \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-`Development`、`Staging`、`Production` 的服务地址分别由 `Configurations/` 下的 `.xcconfig` 注入。完整步骤、验收标准、测试和上架清单见 [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md)。开始数据层编码前，建议先在 Guiding Page 服务端明确并版本化 `/api/schools` 的契约，避免 Web 与 iOS 各自维护的数据结构发生漂移。
+The service address for `Development`, `Staging` and `Production` is injected by the matching
+`.xcconfig` under `Configurations/`. The full steps, acceptance criteria, tests and submission
+checklist are in [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md). Pin and version
+the guiding page's `/api/schools` contract before writing the data layer, so the web client and
+this app cannot each maintain their own idea of the data.
 
-App 只读取 Guiding Page 的聚合接口，不直接轮询学校。开发时可运行 `python3 scripts/verify_guide_data.py`，读取真实学校的权威 `/api/summary`，核对聚合接口中的身份、社团总数、分类和发布时间；演示学校使用保存的数据，因此会被明确跳过。学校独立部署和自主管理的边界见 [`docs/SYNC_ARCHITECTURE.md`](docs/SYNC_ARCHITECTURE.md)。
+The app reads the guiding page's aggregate and never polls a school directly. While developing,
+`python3 scripts/verify_guide_data.py` reads a real school's authoritative `/api/summary` and
+checks the identity, club total, categories and publication time the aggregate reports; demo
+schools serve saved data and are skipped explicitly. Where a school's own deployment ends and
+this app begins is described in [`docs/SYNC_ARCHITECTURE.md`](docs/SYNC_ARCHITECTURE.md).
 
-## 跨仓库契约
+## Cross-repository contract
 
-`contracts/v1/` 是学校模板、Guiding Page 和本 App 共用的 v1 契约，由
-[hsclubs-guiding-page](https://github.com/bangxiao0927/hsclubs-guiding-page) 发布并原样复制到这里：
-`/api/v1/summary`、`/.well-known/hsclubs-app.json`、`/api/v1/schools` 的 JSON Schema，固定 fixtures，
-以及移动认证的 PKCE 与一次性 code 测试向量。说明见
-[`contracts/v1/README.md`](contracts/v1/README.md)。
+`contracts/v1/` is the v1 contract this app, the guiding page and the school template share. It is
+published by [hsclubs-guiding-page](https://github.com/bangxiao0927/hsclubs-guiding-page) and
+copied here verbatim: JSON Schemas for `/api/v1/summary`, `/.well-known/hsclubs-app.json` and
+`/api/v1/schools`, pinned fixtures, and the PKCE and one-time code vectors for mobile
+authentication. It is documented in [`contracts/v1/README.md`](contracts/v1/README.md).
 
 ```bash
 node scripts/check-contracts.mjs
 ```
 
-该脚本逐文件校验本地副本与 `manifest.json` 的 sha-256 是否一致，并在 CI 中运行。契约只能在
-Guiding Page 修改后整目录复制过来；直接改这里的副本，三个仓库就会悄悄各走各的。App 侧针对这些
-fixtures 的解码测试随目录迁移一并加入。
+That script compares the sha-256 of every file here against `manifest.json`, and runs in CI. The
+contract is edited upstream and the directory copied over; editing this copy is how three
+repositories quietly stop agreeing. The Swift-side decoding tests against these fixtures arrive
+with the directory migration.
 
-## 许可证
+## Licence
 
-本项目使用 [Apache License 2.0](LICENSE)。
+[Apache License 2.0](LICENSE).
