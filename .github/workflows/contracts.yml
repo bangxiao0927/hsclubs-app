@@ -18,3 +18,6 @@ jobs:
       # Runs on Linux without Xcode: the contract this app decodes is checked on every change,
       # long before there is a simulator build to run it against.
       - run: node scripts/check-contracts.mjs
+      # Cross-repo guard: the vendored copy must equal the canonical manifest the guiding page
+      # publishes, so a drift fails here rather than shipping in an app build.
+      - run: node scripts/check-contract-sync.mjs
