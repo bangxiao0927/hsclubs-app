@@ -8,21 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		03157FF1DE59684805E6D023 /* HSclubsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC666C045FC3095F73FCBED8 /* HSclubsAppUITests.swift */; };
-		0AD3577A515C77D61E18D193 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E013EC8A746C8243840D5B /* Category.swift */; };
 		1DF7D4B89D4132ADF2192BC3 /* DirectoryQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06932C9107B4B001A6C1868E /* DirectoryQuery.swift */; };
 		361668D421032F2C29EB2CC2 /* AppEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E666C5B6BB5F6E477E1F1367 /* AppEnvironmentTests.swift */; };
-		36C873CC0B336961CC6F0F11 /* schools-page-full.json in Resources */ = {isa = PBXBuildFile; fileRef = 8EE10B766F20FAD8826B97EB /* schools-page-full.json */; };
-		416801A3E9F921522598BF40 /* PagePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B261E4A84212AE039A9433 /* PagePayload.swift */; };
 		4EA76BCFE1BF86D688E56A3F /* FakeSchoolsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD51844BA0088BDB923C973 /* FakeSchoolsCache.swift */; };
-		50EE5038EFA2058B547C6E6F /* SchoolsPageDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661C81EF8D9191CD3572234F /* SchoolsPageDecoder.swift */; };
 		54F340B0259C228B2376984D /* SchoolsRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C08286D85015A37BB8B395C /* SchoolsRepositoryTests.swift */; };
-		551A1EDF30E6784E1ED0A76C /* School.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070B7B879FEB5B32F8424DB3 /* School.swift */; };
 		595EA7ED76AF20448DAD2131 /* FileSchoolsCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31047DC25B6E58B9B80779CF /* FileSchoolsCacheTests.swift */; };
-		59C7302E1F4FCB4FFD5C2DEE /* SchoolLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DCD78AEA090AE47514E564 /* SchoolLocation.swift */; };
 		60E322E1AEF92DB2E35610DB /* FloatingSwitcherLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89F1F61FEF555B5BD55E68D /* FloatingSwitcherLayout.swift */; };
 		63BBCDACA2D473BF1F568084 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8F1985024D9E656048217A /* RootView.swift */; };
 		6C63EA98AC61DAF38D158B53 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8365CBA07145755638C4C4C3 /* AppEnvironment.swift */; };
-		6E5D6457962DBACCA328E7E0 /* SchoolStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26526451916F8241F24CF79 /* SchoolStatus.swift */; };
 		7017FD7334B0BE06477EBC46 /* FloatingSwitcherGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4528A6948C30A065CAE6D2BF /* FloatingSwitcherGestureView.swift */; };
 		71CD1A1F47554DCF5F2E8336 /* SchoolSiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE8CEAF14FD4843A558E472 /* SchoolSiteView.swift */; };
 		727C0BCA79DA25DB526E2FB8 /* SchoolSiteWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC902E1253D32028A229504 /* SchoolSiteWebView.swift */; };
@@ -38,16 +31,16 @@
 		A2089F99A86CF7F0DFEEEF2B /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E5934441BB3A64BCE4FCD1 /* Fixtures.swift */; };
 		B3C782127F7871651BB4FEDB /* UITestDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0B87EB5B91CA14672FA04D /* UITestDependencies.swift */; };
 		B833EEF5A8CE012BF810196B /* SchoolSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA18FFFD4D02A75F76E8C14 /* SchoolSelectionTests.swift */; };
-		B8F108BEE39BDA1AB3DA0882 /* PagePayloadDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CE6D41397C6A44855C9D23 /* PagePayloadDecodingTests.swift */; };
-		BC16F41A74CEA451B837F13C /* SchoolSiteURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48783F6E6BF01E5BBF58C70B /* SchoolSiteURLTests.swift */; };
-		BF0CC8FBA2AE89FA8F7F8AF8 /* Totals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5534715424DB486C0D0A35 /* Totals.swift */; };
 		C109B30995FDA3DEF252E659 /* DirectoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6E5EEAFDC5803F55456E59F /* DirectoryViewModelTests.swift */; };
 		CA2E8F46BFBCBA62F19675BB /* SchoolsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525CA7DD231182ED252F003A /* SchoolsAPI.swift */; };
 		CD60F62E93E91C2FF6BB9B53 /* SchoolSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E853FAAAA032354B90DB418 /* SchoolSelection.swift */; };
 		D02AAFD0A6DE32C203211AA6 /* FileSchoolsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0804C2C284CBB6F41AFBA91F /* FileSchoolsCache.swift */; };
 		DF2683BC8812FF0C9D59FD38 /* HSclubsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308E62B6A2B52699AC1D5409 /* HSclubsApp.swift */; };
 		EC901FB7115A7ECD67042C62 /* FakeSchoolsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D75B850CB666E2C773237E0 /* FakeSchoolsAPI.swift */; };
-		F165ADE68B20D0F421E1F316 /* HistoryPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F99B0C943F124E7468D6CE9 /* HistoryPoint.swift */; };
+		DE0000000000000000000002 /* DirectorySchool.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000001 /* DirectorySchool.swift */; };
+		DE0000000000000000000004 /* AppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000003 /* AppDirectory.swift */; };
+		DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */; };
+		DE0000000000000000000008 /* app-directory-full.json in Resources */ = {isa = PBXBuildFile; fileRef = DE0000000000000000000007 /* app-directory-full.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +62,6 @@
 
 /* Begin PBXFileReference section */
 		06932C9107B4B001A6C1868E /* DirectoryQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryQuery.swift; sourceTree = "<group>"; };
-		070B7B879FEB5B32F8424DB3 /* School.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = School.swift; sourceTree = "<group>"; };
 		0804C2C284CBB6F41AFBA91F /* FileSchoolsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSchoolsCache.swift; sourceTree = "<group>"; };
 		0E853FAAAA032354B90DB418 /* SchoolSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSelection.swift; sourceTree = "<group>"; };
 		13843B4BD0C1D1DE967A1085 /* SchoolsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolsRepository.swift; sourceTree = "<group>"; };
@@ -83,34 +75,24 @@
 		4528A6948C30A065CAE6D2BF /* FloatingSwitcherGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingSwitcherGestureView.swift; sourceTree = "<group>"; };
 		45AAE93BCD5560067C8F8086 /* LiveSchoolsAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSchoolsAPITests.swift; sourceTree = "<group>"; };
 		479523DECE3E879F6B7E2D1F /* SchoolsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolsCache.swift; sourceTree = "<group>"; };
-		48783F6E6BF01E5BBF58C70B /* SchoolSiteURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSiteURLTests.swift; sourceTree = "<group>"; };
 		4B43412192B2718429C18F08 /* HSclubsAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HSclubsAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EA071181AD74C3A4DE7DFFB /* StubURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubURLProtocol.swift; sourceTree = "<group>"; };
 		525CA7DD231182ED252F003A /* SchoolsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolsAPI.swift; sourceTree = "<group>"; };
 		5C4DCD205EAEC78D50032115 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		5DF6F5AB8B6B6F6A41843660 /* FloatingSwitcherLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingSwitcherLayoutTests.swift; sourceTree = "<group>"; };
 		63E3920E242DFE55246F812A /* HSclubsAppUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = HSclubsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		661C81EF8D9191CD3572234F /* SchoolsPageDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolsPageDecoder.swift; sourceTree = "<group>"; };
 		6C08286D85015A37BB8B395C /* SchoolsRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolsRepositoryTests.swift; sourceTree = "<group>"; };
-		6F5534715424DB486C0D0A35 /* Totals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Totals.swift; sourceTree = "<group>"; };
-		6F99B0C943F124E7468D6CE9 /* HistoryPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPoint.swift; sourceTree = "<group>"; };
 		80560DCC080A0B90B6D3BA6B /* HSclubs.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = HSclubs.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8365CBA07145755638C4C4C3 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
-		86DCD78AEA090AE47514E564 /* SchoolLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolLocation.swift; sourceTree = "<group>"; };
-		8EE10B766F20FAD8826B97EB /* schools-page-full.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "schools-page-full.json"; sourceTree = "<group>"; };
 		8F83C8A2CD2C49853533CD65 /* Staging.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Staging.xcconfig; sourceTree = "<group>"; };
 		9E0B87EB5B91CA14672FA04D /* UITestDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestDependencies.swift; sourceTree = "<group>"; };
-		A1CE6D41397C6A44855C9D23 /* PagePayloadDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagePayloadDecodingTests.swift; sourceTree = "<group>"; };
 		A2680D361DF298C115DA21B5 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
-		A4E013EC8A746C8243840D5B /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		AAD51844BA0088BDB923C973 /* FakeSchoolsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeSchoolsCache.swift; sourceTree = "<group>"; };
-		B26526451916F8241F24CF79 /* SchoolStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolStatus.swift; sourceTree = "<group>"; };
 		B5315B6A0BE9913845E2BD27 /* DirectoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewModel.swift; sourceTree = "<group>"; };
 		B89F1F61FEF555B5BD55E68D /* FloatingSwitcherLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingSwitcherLayout.swift; sourceTree = "<group>"; };
 		BA8F1985024D9E656048217A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		BFB2B5F24BE015658DD02B90 /* Production.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Production.xcconfig; sourceTree = "<group>"; };
 		C2E5934441BB3A64BCE4FCD1 /* Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
-		C7B261E4A84212AE039A9433 /* PagePayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagePayload.swift; sourceTree = "<group>"; };
 		CCC902E1253D32028A229504 /* SchoolSiteWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSiteWebView.swift; sourceTree = "<group>"; };
 		CE2FA4469EA2D7F09225B3DC /* LiveSchoolsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSchoolsAPI.swift; sourceTree = "<group>"; };
 		D6E5EEAFDC5803F55456E59F /* DirectoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewModelTests.swift; sourceTree = "<group>"; };
@@ -118,6 +100,10 @@
 		E666C5B6BB5F6E477E1F1367 /* AppEnvironmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironmentTests.swift; sourceTree = "<group>"; };
 		FC666C045FC3095F73FCBED8 /* HSclubsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSclubsAppUITests.swift; sourceTree = "<group>"; };
 		FE16A1C93A65D323ADA7F2BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		DE0000000000000000000001 /* DirectorySchool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorySchool.swift; sourceTree = "<group>"; };
+		DE0000000000000000000003 /* AppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectory.swift; sourceTree = "<group>"; };
+		DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDirectoryDecodingTests.swift; sourceTree = "<group>"; };
+		DE0000000000000000000007 /* app-directory-full.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "app-directory-full.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -153,8 +139,7 @@
 		3795757CE44AA20C96E8285D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A1CE6D41397C6A44855C9D23 /* PagePayloadDecodingTests.swift */,
-				48783F6E6BF01E5BBF58C70B /* SchoolSiteURLTests.swift */,
+				DE0000000000000000000005 /* AppDirectoryDecodingTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -208,8 +193,8 @@
 		8450C2D4688993C08CE48C9B /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				DE0000000000000000000007 /* app-directory-full.json */,
 				C2E5934441BB3A64BCE4FCD1 /* Fixtures.swift */,
-				8EE10B766F20FAD8826B97EB /* schools-page-full.json */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -298,14 +283,8 @@
 		BDFE8CBFAA0F85B9A74B6012 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A4E013EC8A746C8243840D5B /* Category.swift */,
-				6F99B0C943F124E7468D6CE9 /* HistoryPoint.swift */,
-				C7B261E4A84212AE039A9433 /* PagePayload.swift */,
-				070B7B879FEB5B32F8424DB3 /* School.swift */,
-				86DCD78AEA090AE47514E564 /* SchoolLocation.swift */,
-				661C81EF8D9191CD3572234F /* SchoolsPageDecoder.swift */,
-				B26526451916F8241F24CF79 /* SchoolStatus.swift */,
-				6F5534715424DB486C0D0A35 /* Totals.swift */,
+				DE0000000000000000000001 /* DirectorySchool.swift */,
+				DE0000000000000000000003 /* AppDirectory.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -458,7 +437,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				36C873CC0B336961CC6F0F11 /* schools-page-full.json in Resources */,
+				DE0000000000000000000008 /* app-directory-full.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,8 +456,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE0000000000000000000002 /* DirectorySchool.swift in Sources */,
+				DE0000000000000000000004 /* AppDirectory.swift in Sources */,
 				6C63EA98AC61DAF38D158B53 /* AppEnvironment.swift in Sources */,
-				0AD3577A515C77D61E18D193 /* Category.swift in Sources */,
 				1DF7D4B89D4132ADF2192BC3 /* DirectoryQuery.swift in Sources */,
 				9BC28DA3959F40AC3E8EC61B /* DirectoryView.swift in Sources */,
 				899AE3A1941D9AAFEE6762A1 /* DirectoryViewModel.swift in Sources */,
@@ -486,21 +466,14 @@
 				7017FD7334B0BE06477EBC46 /* FloatingSwitcherGestureView.swift in Sources */,
 				60E322E1AEF92DB2E35610DB /* FloatingSwitcherLayout.swift in Sources */,
 				DF2683BC8812FF0C9D59FD38 /* HSclubsApp.swift in Sources */,
-				F165ADE68B20D0F421E1F316 /* HistoryPoint.swift in Sources */,
 				97629FB974A4F3F196044C93 /* LiveSchoolsAPI.swift in Sources */,
-				416801A3E9F921522598BF40 /* PagePayload.swift in Sources */,
 				63BBCDACA2D473BF1F568084 /* RootView.swift in Sources */,
-				551A1EDF30E6784E1ED0A76C /* School.swift in Sources */,
-				59C7302E1F4FCB4FFD5C2DEE /* SchoolLocation.swift in Sources */,
 				CD60F62E93E91C2FF6BB9B53 /* SchoolSelection.swift in Sources */,
 				71CD1A1F47554DCF5F2E8336 /* SchoolSiteView.swift in Sources */,
 				727C0BCA79DA25DB526E2FB8 /* SchoolSiteWebView.swift in Sources */,
-				6E5D6457962DBACCA328E7E0 /* SchoolStatus.swift in Sources */,
 				CA2E8F46BFBCBA62F19675BB /* SchoolsAPI.swift in Sources */,
 				82491B6716D52D3322F8CDA8 /* SchoolsCache.swift in Sources */,
-				50EE5038EFA2058B547C6E6F /* SchoolsPageDecoder.swift in Sources */,
 				7C276BFE1EDF4F31626FE8A1 /* SchoolsRepository.swift in Sources */,
-				BF0CC8FBA2AE89FA8F7F8AF8 /* Totals.swift in Sources */,
 				B3C782127F7871651BB4FEDB /* UITestDependencies.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -509,6 +482,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE0000000000000000000006 /* AppDirectoryDecodingTests.swift in Sources */,
 				361668D421032F2C29EB2CC2 /* AppEnvironmentTests.swift in Sources */,
 				85DC6118B35F6DA8E31C2A37 /* DirectoryQueryTests.swift in Sources */,
 				C109B30995FDA3DEF252E659 /* DirectoryViewModelTests.swift in Sources */,
@@ -518,9 +492,7 @@
 				A2089F99A86CF7F0DFEEEF2B /* Fixtures.swift in Sources */,
 				9A47DA32693091A997EB3263 /* FloatingSwitcherLayoutTests.swift in Sources */,
 				75229B8BBC02EE4485C165F5 /* LiveSchoolsAPITests.swift in Sources */,
-				B8F108BEE39BDA1AB3DA0882 /* PagePayloadDecodingTests.swift in Sources */,
 				B833EEF5A8CE012BF810196B /* SchoolSelectionTests.swift in Sources */,
-				BC16F41A74CEA451B837F13C /* SchoolSiteURLTests.swift in Sources */,
 				54F340B0259C228B2376984D /* SchoolsRepositoryTests.swift in Sources */,
 				8ACFB7D43EE38A2F77FD8A72 /* StubURLProtocol.swift in Sources */,
 			);

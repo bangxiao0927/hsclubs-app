@@ -4,51 +4,55 @@ import Foundation
 struct UITestSchoolsAPI: SchoolsAPI {
     static let empty = UITestSchoolsAPI(data: Data("""
         {
-          "title": "HS Clubs",
+          "contract": "hsclubs.app-directory",
+          "version": 1,
           "generatedAt": "2024-05-01T12:00:00Z",
-          "totals": { "schools": 0, "clubs": 0, "checkedAge": "just now" },
           "schools": []
         }
         """.utf8))
 
     static let sample = UITestSchoolsAPI(data: Data("""
         {
-          "title": "HS Clubs",
+          "contract": "hsclubs.app-directory",
+          "version": 1,
           "generatedAt": "2024-05-01T12:00:00Z",
-          "totals": { "schools": 3, "clubs": 30, "checkedAge": "just now" },
           "schools": [
             {
+              "schoolId": "sch_alphaAAAAAAAAAAAAA",
               "slug": "alpha",
-              "siteUrl": "https://alpha.example",
+              "name": "Alpha Academy",
+              "siteOrigin": "https://alpha.example",
               "host": "alpha.example",
-              "status": "live",
-              "schoolName": "Alpha Academy",
+              "demo": false,
+              "integrationStatus": "compatible",
               "clubCount": 10,
-              "categories": [
-                { "name": "STEM", "count": 5 },
-                { "name": "Service", "count": 5 }
-              ],
-              "lastUpdatedAt": "2024-05-03T12:00:00Z"
+              "lastUpdatedAt": "2024-05-03T12:00:00Z",
+              "mobileAuth": false
             },
             {
+              "schoolId": "sch_betaBBBBBBBBBBBBBB",
               "slug": "beta",
-              "siteUrl": "https://clubs.beta.example",
+              "name": "Beta High",
+              "siteOrigin": "https://clubs.beta.example",
               "host": "clubs.beta.example",
-              "status": "live",
-              "schoolName": "Beta High",
+              "demo": false,
+              "integrationStatus": "degraded",
               "clubCount": 20,
-              "categories": [{ "name": "Service", "count": 20 }],
-              "lastUpdatedAt": "2024-05-02T12:00:00Z"
+              "lastUpdatedAt": "2024-05-02T12:00:00Z",
+              "mobileAuth": false
             },
             {
+              "schoolId": "sch_gammaGGGGGGGGGGGGG",
               "slug": "gamma",
-              "siteUrl": "https://gamma.example",
+              "name": "Gamma School",
+              "siteOrigin": "https://gamma.example",
               "host": "gamma.example",
-              "status": "no-data",
-              "schoolName": "Gamma School",
+              "demo": false,
+              "integrationStatus": "incompatible",
+              "unavailableReason": "the school manifest did not match the v1 contract",
               "clubCount": null,
-              "categories": [{ "name": "STEM", "count": 1 }],
-              "lastUpdatedAt": null
+              "lastUpdatedAt": null,
+              "mobileAuth": false
             }
           ]
         }
@@ -56,7 +60,7 @@ struct UITestSchoolsAPI: SchoolsAPI {
 
     let data: Data
 
-    func fetchSchoolsPageData() async throws -> Data {
+    func fetchDirectoryData() async throws -> Data {
         data
     }
 }
@@ -64,7 +68,7 @@ struct UITestSchoolsAPI: SchoolsAPI {
 actor UITestSchoolsCache: SchoolsCache {
     func save(_ data: Data, savedAt: Date) async throws {}
 
-    func load() async -> CachedSchoolsPageData? {
+    func load() async -> CachedDirectoryData? {
         nil
     }
 }

@@ -2,21 +2,21 @@ import Foundation
 @testable import HSclubs
 
 actor FakeSchoolsCache: SchoolsCache {
-    private var stored: CachedSchoolsPageData?
+    private var stored: CachedDirectoryData?
 
-    init(stored: CachedSchoolsPageData? = nil) {
+    init(stored: CachedDirectoryData? = nil) {
         self.stored = stored
     }
 
     func save(_ data: Data, savedAt: Date) async throws {
-        stored = CachedSchoolsPageData(data: data, savedAt: savedAt)
+        stored = CachedDirectoryData(data: data, savedAt: savedAt)
     }
 
-    func load() async -> CachedSchoolsPageData? {
+    func load() async -> CachedDirectoryData? {
         stored
     }
 
-    func currentValue() async -> CachedSchoolsPageData? {
+    func currentValue() async -> CachedDirectoryData? {
         stored
     }
 }

@@ -27,7 +27,7 @@ struct LiveSchoolsAPITests {
         defer { StubURLProtocol.setStub(nil) }
 
         let api = makeAPI(session: makeSession())
-        let data = try await api.fetchSchoolsPageData()
+        let data = try await api.fetchDirectoryData()
 
         #expect(data == body)
     }
@@ -40,7 +40,7 @@ struct LiveSchoolsAPITests {
         )
 
         await #expect(throws: SchoolsAPIError.insecureBaseURL) {
-            try await api.fetchSchoolsPageData()
+            try await api.fetchDirectoryData()
         }
     }
 
@@ -52,7 +52,7 @@ struct LiveSchoolsAPITests {
         )
 
         await #expect(throws: SchoolsAPIError.unexpectedHost("impostor.example")) {
-            try await api.fetchSchoolsPageData()
+            try await api.fetchDirectoryData()
         }
     }
 
@@ -63,7 +63,7 @@ struct LiveSchoolsAPITests {
         let api = makeAPI(session: makeSession())
 
         await #expect(throws: SchoolsAPIError.httpStatus(503)) {
-            try await api.fetchSchoolsPageData()
+            try await api.fetchDirectoryData()
         }
     }
 
@@ -74,8 +74,8 @@ struct LiveSchoolsAPITests {
         let api = makeAPI(session: makeSession())
 
         do {
-            _ = try await api.fetchSchoolsPageData()
-            Issue.record("expected fetchSchoolsPageData to throw")
+            _ = try await api.fetchDirectoryData()
+            Issue.record("expected fetchDirectoryData to throw")
         } catch let error as SchoolsAPIError {
             guard case .transport = error else {
                 Issue.record("expected .transport, got \(error)")
@@ -93,7 +93,7 @@ struct LiveSchoolsAPITests {
         let api = makeAPI(session: makeSession())
 
         await #expect(throws: SchoolsAPIError.nonHTTPResponse) {
-            try await api.fetchSchoolsPageData()
+            try await api.fetchDirectoryData()
         }
     }
 
@@ -105,7 +105,8 @@ struct LiveSchoolsAPITests {
         let api = makeAPI(session: makeSession(), maxResponseBytes: 10)
 
         await #expect(throws: SchoolsAPIError.responseTooLarge) {
-            try await api.fetchSchoolsPageData()
+            try await api.fetchDirectoryData()
         }
     }
 }
+

@@ -1,0 +1,56 @@
+{
+  "contract": "hsclubs.app-directory",
+  "version": 1,
+  "generatedAt": "2024-05-01T12:00:00.123Z",
+  "nextRefreshAt": "2024-05-01T13:00:00Z",
+  "schools": [
+    {
+      "schoolId": "sch_riverbendAAAAAAAAAA",
+      "slug": "riverbend-high",
+      "name": "Riverbend High School",
+      "shortName": "RHS",
+      "siteOrigin": "https://clubs.riverbend-high.example",
+      "host": "clubs.riverbend-high.example",
+      "demo": false,
+      "integrationStatus": "compatible",
+      "unavailableReason": null,
+      "clubCount": 106,
+      "lastUpdatedAt": "2024-04-29T09:15:30.500Z",
+      "mobileAuth": true,
+      "bannerImageUrl": "https://clubs.riverbend-high.example/banner.webp"
+    },
+    {
+      "schoolId": "sch_lakesideBBBBBBBBBBB",
+      "slug": "lakeside-prep",
+      "name": "Lakeside Prep",
+      "siteOrigin": "https://lakeside-prep.example",
+      "host": "lakeside-prep.example",
+      "integrationStatus": "degraded"
+    },
+    {
+      "schoolId": "sch_demoacademyCCCCCCC",
+      "slug": "demo-academy",
+      "name": "Demo Academy",
+      "siteOrigin": "https://demo-academy.example",
+      "host": "demo-academy.example",
+      "demo": true,
+      "integrationStatus": "incompatible",
+      "unavailableReason": "the school manifest did not match the v1 contract"
+    },
+    {
+      "schoolId": "sch_quirkyDDDDDDDDDDDDD",
+      "slug": "quirky",
+      "name": "Quirky School",
+      "siteOrigin": "https://quirky.example",
+      "host": "quirky.example",
+      "integrationStatus": "some-future-status"
+    },
+    {
+      "schoolId": "sch_namelessEEEEEEEEEE",
+      "slug": "nameless",
+      "siteOrigin": "https://nameless.example",
+      "host": "nameless.example",
+      "integrationStatus": "compatible"
+    }
+  ]
+}
