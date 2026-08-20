@@ -8,8 +8,8 @@
 // not turn an unrelated PR red.
 import process from 'node:process'
 
-const guideOrigin = process.env.HSCLUBS_GUIDE_ORIGIN ?? 'https://clubs.bangxiao.net'
-const officialCallback = 'https://clubs.bangxiao.net/mobile-auth/callback'
+const guideOrigin = process.env.HSCLUBS_GUIDE_ORIGIN ?? 'https://hsclubs.net'
+const officialCallback = 'https://hsclubs.net/mobile-auth/callback'
 
 const problems = []
 const fail = (school, message) => problems.push(`${school}: ${message}`)

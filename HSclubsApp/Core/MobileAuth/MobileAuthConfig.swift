@@ -9,7 +9,7 @@ enum MobileAuthConfig {
     static let userAgentMarker = "HSclubsApp/1 (mobile-auth/1)"
 
     /// The one official return channel, matched exactly before a callback is trusted.
-    static let callbackHost = "clubs.bangxiao.net"
+    static let callbackHost = "hsclubs.net"
     static let callbackPath = "/mobile-auth/callback"
 
     static var callbackURL: URL {

@@ -1,3 +1,3 @@
-API_BASE_URL = https:/$()/clubs.bangxiao.net
+API_BASE_URL = https:/$()/hsclubs.net
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) DEVELOPMENT
 

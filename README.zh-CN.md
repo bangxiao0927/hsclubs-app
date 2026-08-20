@@ -2,7 +2,7 @@
 
 > 中文翻译。英文版是原本：[README.md](README.md)。两份内容不一致时以英文版为准。
 
-HSclubs iOS 是 [HSclubs Guiding Page](https://clubs.bangxiao.net) 的学校切换入口。用户搜索并选择已验证学校后，App 全屏打开该学校自己管理的站点。
+HSclubs iOS 是 [HSclubs Guiding Page](https://hsclubs.net) 的学校切换入口。用户搜索并选择已验证学校后，App 全屏打开该学校自己管理的站点。
 
 > 当前状态：已完成精简学校选择器、生产 API、离线缓存、全屏学校站点、上次学校记忆和悬浮切换入口。后续实施流程见 [iOS 开发流程](docs/IOS_DEVELOPMENT_PLAN.md)。
 
@@ -10,7 +10,7 @@ HSclubs iOS 是 [HSclubs Guiding Page](https://clubs.bangxiao.net) 的学校切�
 
 Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开摘要拉取数据，iOS 客户端只需要读取聚合服务，不应直接轮询每个学校，也不需要复制 Node.js poller。
 
-- 公开数据接口：`GET https://clubs.bangxiao.net/api/schools`
+- 公开数据接口：`GET https://hsclubs.net/api/schools`
 - 接口当前可通过 HTTPS 访问，返回 `200 application/json`
 - 核心功能：按学校名或域名搜索、选择学校、记住上次选择、全屏打开学校站点和切换学校
 - 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；用户点击的外部链接交由系统浏览器处理，登录/OAuth 等跨源重定向和表单提交保留在 WebView 内以维持会话

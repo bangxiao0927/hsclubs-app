@@ -11,7 +11,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 
-GUIDE_URL = "https://clubs.bangxiao.net/api/schools"
+GUIDE_URL = "https://hsclubs.net/api/schools"
 
 
 def load_json(url: str) -> object:

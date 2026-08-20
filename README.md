@@ -3,7 +3,7 @@
 [中文](README.zh-CN.md)
 
 HSclubs iOS is the school switcher for the
-[HSclubs Guiding Page](https://clubs.bangxiao.net). Somebody searches for a verified school,
+[HSclubs Guiding Page](https://hsclubs.net). Somebody searches for a verified school,
 picks it, and the app opens that school's own site full screen.
 
 > Status: the trimmed school picker, the production API, the offline cache, the full-screen
@@ -16,7 +16,7 @@ A read-only aggregator. Its server polls each school's public summary on a sched
 reads the aggregate and nothing else: it must not poll schools directly, and it does not need a
 copy of the Node.js poller.
 
-- Public data endpoint: `GET https://clubs.bangxiao.net/api/schools`
+- Public data endpoint: `GET https://hsclubs.net/api/schools`
 - Reachable over HTTPS today, answering `200 application/json`
 - Scope: search by school name or host, pick a school, remember the last one, open that school's
   site full screen, and switch schools

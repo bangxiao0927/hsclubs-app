@@ -6,7 +6,7 @@ HSclubs Guiding Page 的浏览器端是 React 应用，通过相对地址 `GET /
 
 生产接口检查结果：
 
-- `https://clubs.bangxiao.net/api/schools` 可用，使用有效 HTTPS，返回 JSON。
+- `https://hsclubs.net/api/schools` 可用，使用有效 HTTPS，返回 JSON。
 - 顶层字段包括 `title`、`generatedAt`、`totals`、`schools`。
 - 学校字段包括身份、官网、状态、社团数量、分类、时间、趋势历史和最后错误。
 - 当前响应使用 `Cache-Control: no-store`。客户端仍可保存最近一次成功响应用于断网降级，但刷新时必须请求服务端新数据，并明确标注缓存时间。
