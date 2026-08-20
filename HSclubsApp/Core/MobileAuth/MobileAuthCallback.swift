@@ -2,7 +2,7 @@ import Foundation
 
 /// A parsed mobile-auth Universal Link.
 ///
-/// The one official return channel is `https://clubs.bangxiao.net/mobile-auth/callback` -- a
+/// The one official return channel is `https://hsclubs.net/mobile-auth/callback` -- a
 /// Universal Link, never a custom URL scheme another app could register. The provider hands back
 /// exactly one of a one-time `code` or an `error`, alongside the `schoolId` and the `state` the
 /// app generated. Nothing here is ever logged: the code is a live credential for ~a minute, and
@@ -19,7 +19,7 @@ struct MobileAuthCallback: Equatable, Sendable {
     let state: String
     let payload: Payload
 
-    static let officialHost = "clubs.bangxiao.net"
+    static let officialHost = "hsclubs.net"
     static let callbackPath = "/mobile-auth/callback"
 
     /// Parses a URL into a callback, or nil if it is not a well-formed callback for this domain.

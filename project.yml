@@ -27,7 +27,7 @@ targets:
       path: HSclubsApp/App/HSclubs.entitlements
       properties:
         com.apple.developer.associated-domains:
-          - applinks:clubs.bangxiao.net
+          - applinks:hsclubs.net
     info:
       path: HSclubsApp/App/Info.plist
       properties:
@@ -43,6 +43,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: net.hsclubs.app
         PRODUCT_NAME: HSclubs
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 1.0
         TARGETED_DEVICE_FAMILY: "1,2"
