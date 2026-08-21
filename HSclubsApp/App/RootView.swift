@@ -31,6 +31,16 @@ struct RootView: View {
             // selection that has vanished or turned not-openable. Done here rather than in a
             // computed property so the migration writes through exactly once per load.
             if let directory {
+                _ = schoolSelection.reconcile(
+                    with: directory,
+                    allowDestructiveReset: model.directoryIsAuthoritative
+                )
+            }
+        }
+        .onChange(of: model.directoryIsAuthoritative) { _, isAuthoritative in
+            // A network payload can equal the cached payload, so directory itself may not emit a
+            // second change. Reconcile again when that payload becomes authoritative.
+            if isAuthoritative, let directory = model.directory {
                 _ = schoolSelection.reconcile(with: directory)
             }
         }

@@ -8,6 +8,7 @@ final class DirectoryViewModel {
     private var hasLoaded = false
 
     private(set) var directory: AppDirectory?
+    private(set) var directoryIsAuthoritative = false
     private(set) var cachedAt: Date?
     private(set) var errorMessage: String?
     private(set) var isLoading = true
@@ -51,12 +52,14 @@ final class DirectoryViewModel {
             case .cacheLoaded(let cachedDirectory, let savedAt):
                 pendingCache = (cachedDirectory, savedAt)
                 if directory == nil {
+                    directoryIsAuthoritative = false
                     directory = cachedDirectory
                     cachedAt = savedAt
                     isLoading = false
                     isRefreshing = true
                 }
             case .networkSucceeded(let freshDirectory):
+                directoryIsAuthoritative = true
                 directory = freshDirectory
                 cachedAt = nil
                 errorMessage = nil

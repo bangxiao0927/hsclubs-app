@@ -139,6 +139,22 @@ struct SchoolSelectionTests {
         #expect(selection.selectedSchoolId == nil)
     }
 
+    @Test func staleCacheDoesNotEraseASelectionThatReturnsFromNetwork() {
+        let storage = UserDefaults(suiteName: UUID().uuidString)!
+        let selection = SchoolSelection(storage: storage)
+        selection.select(school())
+
+        let cachedResult = selection.reconcile(
+            with: directory([school(status: .incompatible)]),
+            allowDestructiveReset: false
+        )
+        let freshResult = selection.reconcile(with: directory([school()]))
+
+        #expect(cachedResult == nil)
+        #expect(freshResult?.schoolId == "sch_alphaAAAAAAAAAAAAA")
+        #expect(selection.selectedSchoolId == "sch_alphaAAAAAAAAAAAAA")
+    }
+
     @Test func keepsAMigratedSelectionAcrossRelaunchWithoutTheLegacyKey() {
         let storage = UserDefaults(suiteName: UUID().uuidString)!
         storage.set("alpha", forKey: SchoolSelection.legacySlugKey)

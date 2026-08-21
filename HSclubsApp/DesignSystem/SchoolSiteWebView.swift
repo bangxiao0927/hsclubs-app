@@ -31,7 +31,7 @@ struct SchoolSiteWebView: UIViewRepresentable {
 
     func makeCoordinator() -> Coordinator {
         Coordinator(
-            expectedHost: url.host,
+            expectedOrigin: url,
             onLoadingChanged: onLoadingChanged,
             onFailure: onFailure,
             onLoginRequested: onLoginRequested
@@ -45,12 +45,12 @@ struct SchoolSiteWebView: UIViewRepresentable {
         private let onLoginRequested: ((String?) -> Void)?
 
         init(
-            expectedHost: String?,
+            expectedOrigin: URL,
             onLoadingChanged: @escaping (Bool) -> Void,
             onFailure: @escaping (String) -> Void,
             onLoginRequested: ((String?) -> Void)?
         ) {
-            self.policy = expectedHost.map(SchoolSiteNavigationPolicy.init(expectedHost:))
+            self.policy = SchoolSiteNavigationPolicy(expectedOrigin: expectedOrigin)
             self.onLoadingChanged = onLoadingChanged
             self.onFailure = onFailure
             self.onLoginRequested = onLoginRequested

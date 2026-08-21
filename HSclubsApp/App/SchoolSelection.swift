@@ -60,13 +60,16 @@ final class SchoolSelection {
     /// incompatible does not strand the user on a dead site; and a legacy slug is migrated to an
     /// id when exactly one school matches it, or dropped when zero or several do. Returns the
     /// school to open now, or nil to show the directory.
-    func reconcile(with directory: AppDirectory) -> DirectorySchool? {
+    func reconcile(
+        with directory: AppDirectory,
+        allowDestructiveReset: Bool = true
+    ) -> DirectorySchool? {
         if let selectedSchoolId {
             guard
                 let school = directory.schools.first(where: { $0.schoolId == selectedSchoolId }),
                 school.enterableURL != nil
             else {
-                clear()
+                if allowDestructiveReset { clear() }
                 return nil
             }
             return school
@@ -77,7 +80,7 @@ final class SchoolSelection {
         guard matches.count == 1, let migrated = matches.first, migrated.enterableURL != nil else {
             // Zero matches, several, or a match that cannot be opened: a slug is not enough to
             // resume safely, so forget it and let the user choose again.
-            clear()
+            if allowDestructiveReset { clear() }
             return nil
         }
         persist(schoolId: migrated.schoolId)

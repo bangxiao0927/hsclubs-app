@@ -59,6 +59,9 @@ const checkSchool = async (school) => {
     fail(label, `directory status is ${school.integrationStatus}, not compatible`)
     return
   }
+  if (school.mobileAuth !== true) {
+    fail(label, 'directory does not enable mobile auth')
+  }
 
   // Manifest: identity agrees, mobile auth declared, official callback.
   let manifest

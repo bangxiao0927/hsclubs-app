@@ -21,8 +21,19 @@ enum SchoolSiteNavigationDecision: Equatable {
 }
 
 struct SchoolSiteNavigationPolicy {
-    /// The one origin the guiding page verified for this school. Same-origin is defined against it.
-    let expectedHost: String
+    private let expectedHost: String
+    private let expectedPort: Int
+
+    /// The one origin the guiding page verified for this school. Same-origin includes the effective
+    /// HTTPS port, so a different service on the same hostname is still treated as external.
+    init?(expectedOrigin: URL) {
+        guard
+            expectedOrigin.scheme?.lowercased() == "https",
+            let host = expectedOrigin.host
+        else { return nil }
+        expectedHost = host
+        expectedPort = expectedOrigin.port ?? 443
+    }
 
     func decide(
         url: URL?,
@@ -43,7 +54,7 @@ struct SchoolSiteNavigationPolicy {
         // let the non-https case above have already refused the rest.
         guard isMainFrame else { return .allowInWebView }
 
-        let sameOrigin = url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame
+        let sameOrigin = isSameOrigin(url)
         if sameOrigin {
             if url.path == MobileAuthConfig.startPath {
                 return .startMobileAuth(returnTo: sameOriginPath(sourceURL))
@@ -63,7 +74,7 @@ struct SchoolSiteNavigationPolicy {
     /// view, an off-origin https one goes to the system browser, and anything else is refused.
     func decideNewWindow(url: URL?) -> SchoolSiteNavigationDecision {
         guard let url, url.scheme?.lowercased() == "https" else { return .cancel }
-        let sameOrigin = url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame
+        let sameOrigin = isSameOrigin(url)
         return sameOrigin ? .allowInWebView : .openExternally
     }
 
@@ -71,7 +82,7 @@ struct SchoolSiteNavigationPolicy {
     private func sameOriginPath(_ sourceURL: URL?) -> String? {
         guard
             let sourceURL,
-            sourceURL.host?.caseInsensitiveCompare(expectedHost) == .orderedSame,
+            isSameOrigin(sourceURL),
             let components = URLComponents(url: sourceURL, resolvingAgainstBaseURL: false)
         else { return nil }
         let path = components.path.isEmpty ? "/" : components.path
@@ -79,5 +90,13 @@ struct SchoolSiteNavigationPolicy {
             return path + "?" + query
         }
         return path
+    }
+
+    private func isSameOrigin(_ url: URL) -> Bool {
+        guard
+            url.scheme?.lowercased() == "https",
+            url.host?.caseInsensitiveCompare(expectedHost) == .orderedSame
+        else { return false }
+        return (url.port ?? 443) == expectedPort
     }
 }

@@ -14,6 +14,7 @@ struct DirectoryViewModelTests {
         // The nameless entry is dropped; the other four survive.
         #expect(model.directory?.schools.count == 4)
         #expect(model.cachedAt == nil)
+        #expect(model.directoryIsAuthoritative)
         #expect(model.errorMessage == nil)
         #expect(model.isLoading == false)
         #expect(model.isRefreshing == false)
@@ -33,6 +34,7 @@ struct DirectoryViewModelTests {
 
         #expect(model.directory?.schools.count == 4)
         #expect(model.cachedAt == cachedAt)
+        #expect(!model.directoryIsAuthoritative)
         #expect(model.errorMessage == "Showing saved data. Check your connection and try again.")
     }
 

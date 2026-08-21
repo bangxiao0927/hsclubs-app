@@ -5,7 +5,7 @@ import WebKit
 
 @MainActor
 struct SchoolSiteNavigationPolicyTests {
-    private let policy = SchoolSiteNavigationPolicy(expectedHost: "alpha.example")
+    private let policy = SchoolSiteNavigationPolicy(expectedOrigin: URL(string: "https://alpha.example")!)!
     private func url(_ s: String) -> URL { URL(string: s)! }
 
     @Test func keepsSameOriginNavigationInTheWebView() {
@@ -14,6 +14,22 @@ struct SchoolSiteNavigationPolicyTests {
             navigationType: .linkActivated,
             isMainFrame: true,
             sourceURL: url("https://alpha.example/")) == .allowInWebView)
+    }
+
+    @Test func includesTheEffectivePortInTheOriginBoundary() {
+        let alternatePort = SchoolSiteNavigationPolicy(
+            expectedOrigin: url("https://alpha.example:8443")
+        )!
+        #expect(alternatePort.decide(
+            url: url("https://alpha.example/clubs"),
+            navigationType: .other,
+            isMainFrame: true,
+            sourceURL: nil) == .cancel)
+        #expect(alternatePort.decide(
+            url: url("https://alpha.example:8443/clubs"),
+            navigationType: .other,
+            isMainFrame: true,
+            sourceURL: nil) == .allowInWebView)
     }
 
     @Test func sendsUserTappedExternalLinksToTheSystemBrowser() {
