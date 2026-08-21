@@ -37,9 +37,9 @@ final class MobileAuthFlowStore {
 
     /// Matches a callback and consumes the pending flow.
     ///
-    /// Every rejection path clears the flow first, so a second delivery of the same callback --
-    /// a duplicate Universal Link, a back-forward in the browser -- finds nothing pending and is
-    /// rejected as unknown rather than replayed.
+    /// Once state matches, every outcome consumes the flow, so a duplicate callback cannot replay
+    /// it. A mismatched state leaves the legitimate flow intact rather than letting an unrelated
+    /// callback invalidate an in-progress sign-in.
     func match(_ callback: MobileAuthCallback) -> Match {
         guard let flow = pending else {
             // No flow: either the app never started one, or this is a duplicate arriving after the

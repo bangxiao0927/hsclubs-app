@@ -33,11 +33,18 @@ const checkAppSiteAssociation = async () => {
     const aasa = await getJson(`${guideOrigin}/.well-known/apple-app-site-association`)
     const details = aasa?.applinks?.details ?? []
     const paths = details.flatMap((d) => (d.components ?? []).map((c) => c['/']))
+    const appIDs = details.flatMap((d) => d.appIDs ?? [])
+    const credentialAppIDs = aasa?.webcredentials?.apps ?? []
     if (!paths.includes('/mobile-auth/callback')) {
       problems.push('AASA: does not map /mobile-auth/callback')
     }
-    if (!details.some((d) => (d.appIDs ?? []).length > 0)) {
+    if (appIDs.length === 0) {
       problems.push('AASA: names no app id')
+    }
+    if (credentialAppIDs.length === 0) {
+      problems.push('AASA: names no app id for web credentials')
+    } else if (!appIDs.some((appID) => credentialAppIDs.includes(appID))) {
+      problems.push('AASA: app links and web credentials do not name the same app')
     }
   } catch (error) {
     problems.push(`AASA: ${error.message}`)

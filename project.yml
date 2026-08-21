@@ -28,6 +28,7 @@ targets:
       properties:
         com.apple.developer.associated-domains:
           - applinks:hsclubs.net
+          - webcredentials:hsclubs.net
     info:
       path: HSclubsApp/App/Info.plist
       properties:

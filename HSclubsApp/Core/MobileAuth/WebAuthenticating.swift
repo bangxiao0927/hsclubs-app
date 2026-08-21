@@ -25,32 +25,45 @@ enum WebAuthenticationError: Error, Equatable, Sendable {
 /// falling back to an embedded web view, which is exactly the fallback this design forbids.
 @MainActor
 final class ASWebAuthenticationRunner: NSObject, WebAuthenticating {
+    private var activeSession: ASWebAuthenticationSession?
+    private var activeRequestID: UUID?
+
     func authenticate(startURL: URL) async -> Result<URL, WebAuthenticationError> {
         guard #available(iOS 17.4, *) else {
             return .failure(.failed("Mobile sign-in requires iOS 17.4 or later."))
         }
         return await withCheckedContinuation { continuation in
+            let requestID = UUID()
             let session = ASWebAuthenticationSession(
                 url: startURL,
                 callback: .https(host: MobileAuthConfig.callbackHost, path: MobileAuthConfig.callbackPath)
-            ) { callbackURL, error in
-                if let callbackURL {
-                    continuation.resume(returning: .success(callbackURL))
-                    return
+            ) { [weak self] callbackURL, error in
+                Task { @MainActor in
+                    guard self?.activeRequestID == requestID else { return }
+                    self?.activeRequestID = nil
+                    self?.activeSession = nil
+                    if let callbackURL {
+                        continuation.resume(returning: .success(callbackURL))
+                        return
+                    }
+                    if let error = error as? ASWebAuthenticationSessionError,
+                       error.code == .canceledLogin {
+                        continuation.resume(returning: .failure(.cancelled))
+                        return
+                    }
+                    continuation.resume(returning: .failure(.failed(error?.localizedDescription ?? "Sign-in failed.")))
                 }
-                if let error = error as? ASWebAuthenticationSessionError,
-                   error.code == .canceledLogin {
-                    continuation.resume(returning: .failure(.cancelled))
-                    return
-                }
-                continuation.resume(returning: .failure(.failed(error?.localizedDescription ?? "Sign-in failed.")))
             }
             session.presentationContextProvider = self
             // A code lives ~a minute; the sheet should not linger far past that, but the person may
             // need to type a password, so the app does not impose its own tight timeout here --
             // .timedOut is reserved for the completion step.
             session.prefersEphemeralWebBrowserSession = false
+            activeRequestID = requestID
+            activeSession = session
             if !session.start() {
+                activeRequestID = nil
+                activeSession = nil
                 continuation.resume(returning: .failure(.failed("Sign-in could not start.")))
             }
         }
