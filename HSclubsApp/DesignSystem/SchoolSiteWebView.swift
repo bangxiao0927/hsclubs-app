@@ -21,6 +21,7 @@ struct SchoolSiteWebView: UIViewRepresentable {
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.pinchGestureRecognizer?.isEnabled = false
         webView.load(URLRequest(url: url))
         onWebViewCreated?(webView)
         return webView

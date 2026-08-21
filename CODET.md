@@ -7,6 +7,7 @@
 - Tapping the floating switcher expands an adjacent Switch School panel; tapping elsewhere or waiting collapses it.
 - The floating switcher returns to the native school search screen so the user can choose another school.
 - Do not show a persistent host/header bar over the school website.
+- Disable pinch-to-zoom inside the school website WebView.
 
 ## Cross-Repository Architecture
 
