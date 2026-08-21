@@ -113,6 +113,7 @@ struct MobileAuthLoginControllerTests {
 }
 
 /// A controllable stand-in for the system sign-in sheet.
+@MainActor
 final class StubWebAuth: WebAuthenticating, @unchecked Sendable {
     enum Behavior {
         case succeed(code: String)

@@ -6,11 +6,12 @@ import UIKit
 ///
 /// A protocol so the login state machine can be tested against a controllable double: the real
 /// implementation is a modal `ASWebAuthenticationSession` that no unit test can drive.
+@MainActor
 protocol WebAuthenticating: Sendable {
     func authenticate(startURL: URL) async -> Result<URL, WebAuthenticationError>
 }
 
-enum WebAuthenticationError: Equatable, Sendable {
+enum WebAuthenticationError: Error, Equatable, Sendable {
     case cancelled
     case timedOut
     case failed(String)
