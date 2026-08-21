@@ -106,6 +106,7 @@ struct LiveSchoolsAPITests {
 
         await #expect(throws: SchoolsAPIError.responseTooLarge) {
             try await api.fetchDirectoryData()
+        }
     }
 
     // A declared Content-Length over the cap is refused before the body is read at all.
@@ -128,5 +129,3 @@ struct LiveSchoolsAPITests {
         }
     }
 }
-}
-
