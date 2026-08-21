@@ -33,6 +33,7 @@ targets:
       path: HSclubsApp/App/Info.plist
       properties:
         APIBaseURL: $(API_BASE_URL)
+        MobileAuthEnabled: $(MOBILE_AUTH_ENABLED)
         CFBundleDisplayName: HSclubs
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true

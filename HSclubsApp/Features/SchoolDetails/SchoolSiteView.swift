@@ -3,6 +3,7 @@ import SwiftUI
 struct SchoolSiteView: View {
     let school: DirectorySchool
     let siteURL: URL
+    let mobileAuthEnabled: Bool
     @Bindable var schoolSelection: SchoolSelection
 
     @State private var isLoading = false
@@ -10,9 +11,15 @@ struct SchoolSiteView: View {
     @State private var login = MobileAuthLoginController(webAuth: ASWebAuthenticationRunner())
     @State private var webSession = SchoolWebSession()
 
-    init(school: DirectorySchool, siteURL: URL, schoolSelection: SchoolSelection) {
+    init(
+        school: DirectorySchool,
+        siteURL: URL,
+        mobileAuthEnabled: Bool,
+        schoolSelection: SchoolSelection
+    ) {
         self.school = school
         self.siteURL = siteURL
+        self.mobileAuthEnabled = mobileAuthEnabled
         self.schoolSelection = schoolSelection
     }
 
@@ -20,10 +27,11 @@ struct SchoolSiteView: View {
         ZStack {
             SchoolSiteWebView(
                 url: siteURL,
+                mobileAuthEnabled: mobileAuthEnabled,
                 onLoadingChanged: { isLoading = $0 },
                 onFailure: { failureMessage = $0 },
                 onLoginRequested: { returnTo in
-                    guard school.mobileAuth else { return }
+                    guard mobileAuthEnabled, school.mobileAuth else { return }
                     Task { await login.signIn(to: school, returnTo: returnTo, using: webSession) }
                 },
                 onWebViewCreated: { webSession.attach($0) }

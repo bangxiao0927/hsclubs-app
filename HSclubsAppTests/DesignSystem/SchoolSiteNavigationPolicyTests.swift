@@ -5,7 +5,10 @@ import WebKit
 
 @MainActor
 struct SchoolSiteNavigationPolicyTests {
-    private let policy = SchoolSiteNavigationPolicy(expectedOrigin: URL(string: "https://alpha.example")!)!
+    private let policy = SchoolSiteNavigationPolicy(
+        expectedOrigin: URL(string: "https://alpha.example")!,
+        mobileAuthEnabled: true
+    )!
     private func url(_ s: String) -> URL { URL(string: s)! }
 
     @Test func keepsSameOriginNavigationInTheWebView() {
@@ -65,6 +68,29 @@ struct SchoolSiteNavigationPolicyTests {
             navigationType: .linkActivated,
             isMainFrame: true,
             sourceURL: url("https://alpha.example/")) == .openExternally)
+    }
+
+    // return_to must stay percent-encoded on both halves: a decoded path could smuggle a `?` or
+    // a space into a value the school's schema refuses.
+    @Test func keepsReturnToPercentEncoded() {
+        #expect(policy.decide(
+            url: url("https://alpha.example/api/mobile-auth/start"),
+            navigationType: .linkActivated,
+            isMainFrame: true,
+            sourceURL: url("https://alpha.example/clubs/a%3Fb%20c?tab=members%20one"))
+            == .startMobileAuth(returnTo: "/clubs/a%3Fb%20c?tab=members%20one"))
+    }
+
+    @Test func leavesTheSchoolSiteInControlWhenMobileAuthIsDeferred() {
+        let deferred = SchoolSiteNavigationPolicy(
+            expectedOrigin: url("https://alpha.example"),
+            mobileAuthEnabled: false
+        )!
+        #expect(deferred.decide(
+            url: url("https://alpha.example/api/mobile-auth/start"),
+            navigationType: .linkActivated,
+            isMainFrame: true,
+            sourceURL: url("https://alpha.example/")) == .allowInWebView)
     }
 
     @Test func rejectsNonHttpsUnlessItIsAUserTap() {

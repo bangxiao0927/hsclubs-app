@@ -19,3 +19,4 @@
 - Keep regular website login intact; mobile authentication is a parallel entry point and must not pass OAuth tokens to the App.
 - Restrict WKWebView navigation to verified same-origin school content, open ordinary external links in Safari, and route OAuth only through the mobile-auth protocol.
 - Do not release the App authentication flow until all real schools are upgraded; Demo schools do not participate in the authentication release gate.
+- Keep mobile authentication disabled until the production Apple App ID, AASA association and real-device end-to-end checks are available.

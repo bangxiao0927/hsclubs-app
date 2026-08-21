@@ -13,6 +13,14 @@ enum AppEnvironment {
         return url
     }()
 
+    /// Mobile auth is fail-closed until the production Apple App ID and Universal Link are ready.
+    static let mobileAuthEnabled: Bool = {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: "MobileAuthEnabled") as? String else {
+            return false
+        }
+        return ["yes", "true", "1"].contains(value.lowercased())
+    }()
+
     @MainActor
     static func makeDirectoryViewModel() -> DirectoryViewModel {
 #if DEBUG

@@ -10,12 +10,12 @@ HSclubs iOS 是 [HSclubs Guiding Page](https://hsclubs.net) 的学校切换入�
 
 Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开摘要拉取数据，iOS 客户端只需要读取聚合服务，不应直接轮询每个学校，也不需要复制 Node.js poller。
 
-- 公开数据接口：`GET https://hsclubs.net/api/schools`
+- App 目录接口：`GET https://hsclubs.net/api/v1/schools`
 - 接口当前可通过 HTTPS 访问，返回 `200 application/json`
 - 核心功能：按学校名或域名搜索、选择学校、记住上次选择、全屏打开学校站点和切换学校
-- 学校主页由接口的 `siteUrl` 提供，应用在校验 HTTPS 和 host 后使用全屏 Web 页面打开；用户点击的外部链接交由系统浏览器处理，登录/OAuth 等跨源重定向和表单提交保留在 WebView 内以维持会话
+- 学校主页由目录提供，应用校验完整 HTTPS origin 后使用全屏 Web 页面打开；同源导航留在 WebView，普通外部链接交给 Safari，非用户触发的跨源导航会被拒绝
 - `/api/status` 是运维接口并受 Basic Auth 保护，不属于普通 iOS 客户端功能
-- 数据是只读公开摘要，不包含登录、成员资料或社团管理功能
+- 目录是公开只读数据，不包含成员资料或社团管理数据
 
 学校选择器使用 **SwiftUI 原生开发**。完整学校站点包含登录和管理会话，经 HTTPS/host 校验后作为全屏 `WKWebView` 交给学校自己的 Web 实现；悬浮切换按钮可拖动、贴边，点击后向屏幕内侧展开 `Switch School`，点击页面或稍等片刻会自动收回。
 
@@ -24,21 +24,19 @@ Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开�
 - iOS 17+、Xcode 16+、Swift 6
 - SwiftUI + Observation，使用轻量 MVVM/Feature 分层
 - `URLSession` + `async/await` + `Codable`
-- Swift Charts 展示学校社团数量趋势
 - XCTest / Swift Testing，使用 URLProtocol stub 测试网络层
 - 不引入第三方依赖作为首版默认方案
 
 ## MVP 范围
 
-1. 加载并展示学校总数、社团总数和最近检查时间。
-2. 展示学校卡片及 `live`、`stale`、`no-data`、`demo` 状态。
-3. 按学校名称或域名搜索；按分类进行交集筛选。
-4. 按名称、社团数量、更新时间排序。
-5. 在详情页展示地址、分类、趋势和数据更新时间，并安全打开学校官网。
-6. 支持下拉刷新、加载/空数据/失败状态以及最近一次成功数据的本地缓存。
-7. 支持深色模式、Dynamic Type、VoiceOver 和 Reduce Motion。
+1. 原生首页只显示一个学校/域名搜索框和已验证学校列表。
+2. 选择学校后直接在全屏 `WKWebView` 打开已验证 origin。
+3. 使用不可变 `schoolId` 记住选择，并在下次启动时自动打开。
+4. 提供可拖动、贴边的悬浮学校切换入口，不显示常驻顶栏。
+5. 支持下拉刷新、加载/空数据/失败状态和最近一次成功数据缓存。
+6. 单个错误学校不会导致整个目录失败，不兼容学校可见但不能进入。
 
-MVP 不包含登录、推送、后台高频刷新、社团编辑、学校注册和运维状态页面。
+移动认证代码已经存在，但所有构建配置默认关闭。生产 Apple App ID、AASA、全部真实学校检查和真机 E2E 完成前不会启用。推送、后台轮询、原生学校详情、社团编辑、学校注册和运维状态页面不属于 MVP。
 
 ## 预期目录
 
@@ -50,8 +48,8 @@ HSclubsApp/
     Networking/        # APIClient、错误映射
     Persistence/       # 最近成功响应缓存
   Features/
-    Directory/         # 总览、搜索、筛选、排序
-    SchoolDetails/     # 学校详情与趋势
+    Directory/         # 精简学校/域名搜索和选择
+    SchoolDetails/     # 全屏学校站点与悬浮切换器
   DesignSystem/        # 颜色、字体和复用组件
 HSclubsAppTests/
 HSclubsAppUITests/
@@ -73,7 +71,7 @@ xcodebuild -project HSclubs.xcodeproj \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-`Development`、`Staging`、`Production` 的服务地址分别由 `Configurations/` 下的 `.xcconfig` 注入。完整步骤、验收标准、测试和上架清单见 [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md)。开始数据层编码前，建议先在 Guiding Page 服务端明确并版本化 `/api/schools` 的契约，避免 Web 与 iOS 各自维护的数据结构发生漂移。
+`Development`、`Staging`、`Production` 的服务地址和移动认证开关由 `Configurations/` 下的 `.xcconfig` 注入。完整步骤、验收标准、测试和上架清单见 [`docs/IOS_DEVELOPMENT_PLAN.md`](docs/IOS_DEVELOPMENT_PLAN.md)。App 使用固定且容错解码的 v1 目录，不依赖浏览器页面 payload。
 
 App 只读取 Guiding Page 的聚合接口，不直接轮询学校。开发时可运行 `python3 scripts/verify_guide_data.py`，读取真实学校的权威 `/api/summary`，核对聚合接口中的身份、社团总数、分类和发布时间；演示学校使用保存的数据，因此会被明确跳过。学校独立部署和自主管理的边界见 [`docs/SYNC_ARCHITECTURE.md`](docs/SYNC_ARCHITECTURE.md)。
 

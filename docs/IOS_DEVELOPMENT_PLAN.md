@@ -1,200 +1,112 @@
-# HSclubs iOS 开发流程
+# HSclubs iOS 开发与发布流程
 
-## 1. 现状与可行性检查
+## 当前产品边界
 
-HSclubs Guiding Page 的浏览器端是 React 应用，通过相对地址 `GET /api/schools` 一次性获取页面数据。聚合服务负责验证学校来源、定时拉取摘要、保留最后一次成功结果并判断数据是否过期。因此，iOS 应用适合作为该公开 API 的另一个只读客户端。
+App 是学校入口和切换器，不是 Guiding Page 的原生重写：
 
-生产接口检查结果：
+1. 首页只有学校/域名搜索框和学校列表。
+2. 选择学校后直接全屏打开该学校的已验证站点。
+3. App 记住 `schoolId`，下次启动自动回到该学校。
+4. 学校页面上只覆盖可拖动、贴边、自动收起的切换入口，不显示常驻顶栏。
+5. App 不提供原生学校详情、趋势、分类筛选或社团管理页面。
 
-- `https://hsclubs.net/api/schools` 可用，使用有效 HTTPS，返回 JSON。
-- 顶层字段包括 `title`、`generatedAt`、`totals`、`schools`。
-- 学校字段包括身份、官网、状态、社团数量、分类、时间、趋势历史和最后错误。
-- 当前响应使用 `Cache-Control: no-store`。客户端仍可保存最近一次成功响应用于断网降级，但刷新时必须请求服务端新数据，并明确标注缓存时间。
-- 原生 `URLSession` 不受浏览器 CORS 限制；仍需保持 App Transport Security，不能为方便而允许任意 HTTP。
+## 已完成
 
-### 当前 API 模型
+- SwiftUI 工程、Development/Staging/Production 配置及 App 图标。
+- `GET /api/v1/schools` 网络层、2 MiB 响应限制、HTTPS/host 校验和错误映射。
+- v1 目录容错解码：一个学校无效不会清空全部学校。
+- 缓存优先加载、网络刷新、离线提示和下拉刷新。
+- 使用不可变 `schoolId` 保存学校，支持旧 slug 的一次性唯一匹配迁移。
+- 精简搜索首页、不可进入学校的状态说明和全屏 `WKWebView`。
+- 同源导航边界、外部链接转 Safari、跨源脚本导航拒绝和端口校验。
+- 悬浮切换器的拖动缩小、边缘吸附、展开、点击空白收起和超时收起。
+- v1 跨仓库契约、fixtures、manifest 校验和上游同步 CI。
+- 单元测试、UI 测试，以及 macOS 上执行 `xcodebuild test` 的 CI workflow。
 
-```json
-{
-  "title": "HS Clubs",
-  "generatedAt": "ISO-8601 timestamp",
-  "totals": {
-    "schools": 2,
-    "clubs": 161,
-    "checkedAge": "36 minutes ago"
-  },
-  "schools": [
-    {
-      "slug": "hsclubs",
-      "siteUrl": "https://hsclubs.net",
-      "host": "hsclubs.net",
-      "demo": false,
-      "location": { "lat": 37.359106, "lon": -122.067156 },
-      "status": "live",
-      "schoolName": "HS Clubs",
-      "address": null,
-      "clubCount": 106,
-      "categories": [{ "name": "Academic", "count": 10 }],
-      "publishedAge": "2 days ago",
-      "changedAge": "2 days ago",
-      "checkedAge": "36 minutes ago",
-      "publishedAt": "ISO-8601 timestamp or null",
-      "lastUpdatedAt": "ISO-8601 timestamp or null",
-      "history": [{ "at": "ISO-8601 timestamp", "clubCount": 100 }],
-      "trend": 6,
-      "lastPolledAt": "ISO-8601 timestamp or null",
-      "lastError": null
-    }
-  ]
-}
+## 移动认证延期
+
+移动认证实现保留在代码中，但 `Configurations/*.xcconfig` 的
+`MOBILE_AUTH_ENABLED` 均为 `NO`。关闭时 App：
+
+- 不在 WebView User-Agent 中声明移动认证能力。
+- 不拦截 `/api/mobile-auth/start` 启动 `ASWebAuthenticationSession`。
+- 不可能把一次性 code 或 OAuth token 带入 App 流程。
+
+不要仅为了测试而在 Production 打开开关。启用前必须同时完成：
+
+1. 获得生产 Apple Developer Team/App ID，并确认 Bundle ID `net.hsclubs.app`。
+2. 在 `hsclubs.net` 发布包含真实 `TEAMID.net.hsclubs.app` 的 AASA。
+3. 在真机验证 `applinks:hsclubs.net` 和 `.https` callback。
+4. 所有真实学校通过 manifest、summary、PKCE、一次性 code 和 session completion 检查。
+5. 完成真实 Google 账号 E2E，并接入 `.github/workflows/release-gate.yml`。
+6. 验证取消、过期、错误 state、错误 PKCE、重复 code 和跨学校 callback。
+7. 验证每个学校的 Cookie 会话相互隔离，并在退出 App 后按服务端期限保留。
+8. 将 App 的 `MOBILE_AUTH_ENABLED` 和仓库变量 `HSCLUBS_MOBILE_AUTH_ENABLED` 一起改为 `true`。
+
+仓库变量打开后，认证 prerequisites 和 Google E2E 会从 skipped 变成强制门禁；Google driver 未实现时会明确失败，不能出现假绿色。
+
+## 日常开发流程
+
+### 1. 同步与契约
+
+```bash
+git pull --ff-only
+node scripts/check-contracts.mjs
+node scripts/check-contract-sync.mjs
 ```
 
-不要让客户端因为新增字段而解码失败。未知 `status` 应映射为 `.unknown`，可选字段应保持可选。时间展示应优先根据 ISO-8601 字段和设备区域设置生成；服务端提供的 `*Age` 英文字符串可作为兼容回退，不应成为本地化的唯一来源。
+`contracts/v1` 只能从 Guiding Page 的 canonical contract 整体同步，不能在 App 仓库单独修改。
 
-## 2. 产品定义与设计
+### 2. 修改工程
 
-### 用户路径
+- 普通 Swift 文件直接在 Xcode 中修改。
+- 增删 target、资源或 build setting 时先修改 `project.yml`，然后执行 `xcodegen generate`。
+- 生成后检查 `HSclubs.xcodeproj` diff，避免丢失共享 Scheme 或测试 target。
+- secret、证书、Provisioning Profile、测试账号和 Apple API key 不进入 Git。
 
-1. 用户打开应用，先看到上次缓存或加载骨架。
-2. 应用请求 `/api/schools`，成功后更新总览与目录。
-3. 用户搜索学校名称/域名，选择一个或多个分类，并调整排序。
-4. 用户打开学校详情，查看状态、分类数量与趋势。
-5. 用户点击官网，在应用内 Safari 中访问已验证的 `siteUrl`。
+### 3. 本地测试
 
-### 与网页对齐的规则
-
-- 搜索只匹配用户能看到的学校名称和域名，不匹配隐藏字段。
-- 多个分类采用 AND 规则：学校必须同时包含所有已选分类。
-- 名称排序使用显示名称；社团数量为空时排在有数据学校之后。
-- 更新时间为空时排在最后，不能按 Unix epoch 伪装成有效时间。
-- `demo: true` 必须始终显示“演示数据”，不能呈现为已批准的真实学校。
-- `stale` 仍展示最后一次成功数据，同时解释数据可能过期；`no-data` 不显示虚构的 0。
-
-### 首版页面
-
-- `DirectoryView`：总览、搜索、筛选、排序和学校列表。
-- `SchoolDetailView`：状态、地址、分类、数据时间、趋势图和官网按钮。
-- 全局状态：首次加载、刷新中、空结果、无学校、网络失败、缓存降级。
-
-先在 Figma 或低保真线框中确认 iPhone SE 尺寸和大号 Dynamic Type 下的布局，再实现视觉细节。颜色不能作为状态的唯一表达方式。
-
-## 3. API 契约准备
-
-在创建大量 UI 之前，先为 Guiding Page 补充以下契约工作：
-
-1. 将当前 payload 固化成 JSON Schema 或 OpenAPI 文档，并保存真实匿名化 fixture。
-2. 决定版本策略，例如保持 `/api/schools` 向后兼容，或新增 `/api/v1/schools`。
-3. 明确字段是否可空、状态枚举、时间格式、最大响应大小和排序稳定性。
-4. 给接口增加契约测试，保证 Web 和 iOS 所需字段不会被无意删除或改名。
-5. 约定错误响应和维护模式；客户端不要解析服务端 HTML 错误页作为 JSON。
-
-首版可以直接连接现有接口，但发布 App Store 版本前应完成契约版本化。iOS 审核后的旧客户端无法与服务端同步强制升级。
-
-## 4. 工程初始化
-
-1. 在 Xcode 创建 iOS App：Product Name `HSclubs`，Interface `SwiftUI`，Language `Swift`，最低 iOS 17。
-2. 使用组织拥有的反向域名设置唯一 Bundle ID，例如 `net.hsclubs.app`；不要在签名确认前硬编码临时 ID。
-3. 建立 `Development`、`Staging`、`Production` 三套 `.xcconfig`，通过 `API_BASE_URL` 注入服务地址。
-4. 创建目录分层、单元测试 target 和 UI 测试 target。
-5. 开启严格并发检查，将核心模型声明为 `Sendable`。
-6. 提交共享 Scheme；证书、Provisioning Profile、API key 和个人 Team ID 不进入 Git。
-
-推荐的依赖方向为 `Features -> Core`。网络、缓存不能反向依赖具体页面，View 不直接调用 `URLSession.shared`。
-
-## 5. 数据层实现
-
-按以下顺序实现，每一步都先写测试：
-
-1. 定义 `PagePayload`、`School`、`Category`、`HistoryPoint` 和容错的 `SchoolStatus`。
-2. 配置 `JSONDecoder` 的 ISO-8601 日期策略；为带小数秒和不带小数秒的时间添加兼容解析测试。
-3. 定义 `SchoolsAPI` protocol，再实现基于 `URLSession` 的 `LiveSchoolsAPI`，便于 Preview 和测试注入 fake。
-4. 将 HTTP 非 2xx、无效响应、解码失败、超时和离线映射成用户可理解、日志可诊断的错误。
-5. 设置合理超时，限制接受的响应体大小，只接受 HTTPS 和预期 host。
-6. 实现 `SchoolsCache`，原子写入最近一次成功 JSON及保存时间；不要缓存 Basic Auth、token 或其他秘密。
-7. 实现 repository：先读取缓存供快速展示，再请求网络；网络成功替换缓存，失败时保留缓存并显示离线提示。
-
-缓存只用于可用性，不用于绕过服务端新鲜度规则。应用前台激活或用户下拉刷新时可以重新请求，不需要后台高频轮询。
-
-## 6. 功能实现顺序
-
-### 里程碑 A：可浏览
-
-- 完成网络层、模型、缓存和依赖注入。
-- 实现总览、学校列表、加载/失败/空状态和下拉刷新。
-- 验收：干净安装可加载生产或 staging fixture；断网重开可看到带时间标识的缓存。
-
-### 里程碑 B：可查找
-
-- 实现可测试的纯函数搜索、分类交集筛选和三种排序。
-- 使用 `.searchable`，筛选状态使用 sheet 或适合小屏的导航页面。
-- 验收：结果与网页规则一致；清除筛选后恢复全部学校；无匹配时提供重置入口。
-
-### 里程碑 C：详情与趋势
-
-- 实现学校详情、状态说明、分类数量、时间语义和 Swift Charts 趋势。
-- 校验 `siteUrl` 为 `https` 且 host 一致后，通过全屏学校站点打开；跨 origin 导航交由系统浏览器处理。
-- 验收：`nil` 数据不显示误导值；只有一个历史点时不声称存在趋势；演示学校标识明显。
-
-### 里程碑 D：系统体验
-
-- 支持深色模式、Dynamic Type、VoiceOver、Reduce Motion 和横竖屏布局。
-- 为刷新失败增加可重试操作；刷新过程中保留已有内容，避免整页闪烁。
-- 验收：Accessibility Inspector 无阻断问题，最大字体下主要操作不被裁切。
-
-## 7. 测试策略
-
-### 单元测试
-
-- 完整、缺失可选字段、未知状态、错误日期和新增未知字段的 JSON 解码。
-- 搜索大小写/空格处理、分类 AND 规则和所有排序的空值处理。
-- HTTP 状态、超时、离线、超大响应、无效 JSON 与缓存回退。
-- 日期和数字在至少英文、简体中文区域设置下的格式化。
-
-### UI 测试
-
-- 首次启动加载成功、加载失败后重试、无学校和无搜索结果。
-- 搜索、筛选、排序、打开详情和打开学校官网。
-- 缓存存在时的离线启动，以及 `stale`、`no-data`、`demo` 的展示。
-
-### 持续集成
-
-每次 Pull Request 执行：
+在 Xcode 16.4+ 和 iOS 17.4+ Simulator 上执行：
 
 ```bash
 xcodebuild test \
+  -project HSclubs.xcodeproj \
   -scheme HSclubs \
-  -destination 'platform=iOS Simulator,name=iPhone 16'
+  -configuration Development \
+  -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+  CODE_SIGNING_ALLOWED=NO
 ```
 
-CI 使用固定 fixture 和 stub，不依赖生产网络。可以另设非阻断 smoke job 检查生产 API 契约，并在契约漂移时告警。
+重点回归：
 
-## 8. 安全与隐私
+- 搜索学校名和 host、空目录、网络失败、缓存回退和刷新。
+- 选择保存、旧 slug 迁移、学校重命名及不兼容学校。
+- WebView 同源/端口边界、普通外链和新窗口。
+- 悬浮按钮拖动、贴边、展开、超时收起、切换学校和重启恢复。
+- Dynamic Type、VoiceOver、深色模式以及小屏设备布局。
 
-- 应用只访问聚合 API 和用户主动打开的学校官网，不携带学校 registry、verification token 或运维凭据。
-- 不调用受保护的 `/api/status`，不在应用中嵌入 Basic Auth 密码。
-- 保持 ATS 默认限制，拒绝明文 HTTP；不要使用“允许任意加载”。
-- 日志不记录完整响应、用户搜索词或可能在未来加入的敏感字段。
-- 若首版不加入分析、广告、账号或推送，App Store 隐私申报应为“不收集数据”；最终申报仍须按实际 SDK 和行为复核。
-- 准备公开隐私政策和支持页面，即使应用不收集个人数据也清楚说明网络请求和外部链接行为。
+### 4. Pull Request 门禁
 
-不建议首版做证书 pinning：它会增加证书轮换导致旧版应用断网的风险。标准 ATS、可信 CA 和正常的服务端 TLS 运维更适合当前公开只读数据。
+- `Contracts`：本地 v1 manifest 和 Guiding Page canonical manifest 一致。
+- `iOS`：macOS runner 编译 App，并运行 unit/UI tests。
+- PR 不请求真实学校或 Google，避免外部服务故障阻断普通开发。
 
-## 9. 发布流程
+## 发布流程
 
-1. 冻结 API 契约并完成 staging 端到端测试。
-2. 确认应用名称、图标、截图、描述、关键词、年龄分级、支持 URL 和隐私政策 URL。
-3. 在 App Store Connect 创建应用，配置自动签名和 TestFlight 内测组。
-4. 先进行团队测试，再邀请小范围学校用户测试搜索、数据语义和外部链接。
-5. 修复崩溃、无障碍和契约兼容问题，归档 Release 构建并提交审核。
-6. 发布后监控崩溃与 API 可用性；服务端变更先通过契约测试和旧客户端 fixture 回归。
+1. 确认 Production 的 API 地址、Bundle ID、版本号和认证开关。
+2. 手动运行或触发 Release gate，核心真实学校检查必须通过。
+3. 若移动认证仍关闭，确认相关 jobs 为 skipped，而不是失败后被忽略。
+4. 若移动认证开启，认证 prerequisites 和 Google E2E 必须全部通过。
+5. 在至少一台真实 iPhone 上验证首次启动、学校切换、重启恢复和外链。
+6. 使用 TestFlight 验证签名、AASA、Cookie 生命周期和升级迁移。
+7. 准备 App Store 图标、截图、描述、支持 URL、隐私政策和隐私申报。
+8. Archive Production 构建，上传并提交审核。
 
-## 10. 完成标准
+## 发布完成标准
 
-满足以下条件后可认为 MVP 可以发布：
-
-- 核心流程在支持的最小 iOS 版本和当前版本通过。
-- 首次加载、缓存降级、刷新、搜索、筛选、排序、详情和外链均有测试。
-- VoiceOver 和最大 Dynamic Type 下可以完成核心流程。
-- API 具有向后兼容策略，未知字段和未知状态不会导致整页失败。
-- App 内不存在 secret，ATS 未放宽，隐私申报与实际行为一致。
-- TestFlight 用户确认状态、时间、演示数据和过期数据的表达不会造成误解。
+- `main` 的 Contracts 和 iOS CI 为绿色。
+- Release gate 的核心学校检查为绿色。
+- App 中没有 secret，ATS 未放宽，目录和 WebView 只接受验证过的 HTTPS origin。
+- 选择恢复、缓存降级、导航边界和悬浮切换器均有自动化测试。
+- 隐私申报与实际 SDK/网络行为一致。
+- 移动认证未满足全部前置条件时，运行时开关保持关闭。

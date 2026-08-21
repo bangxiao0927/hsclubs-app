@@ -23,16 +23,18 @@ enum SchoolSiteNavigationDecision: Equatable {
 struct SchoolSiteNavigationPolicy {
     private let expectedHost: String
     private let expectedPort: Int
+    private let mobileAuthEnabled: Bool
 
     /// The one origin the guiding page verified for this school. Same-origin includes the effective
     /// HTTPS port, so a different service on the same hostname is still treated as external.
-    init?(expectedOrigin: URL) {
+    init?(expectedOrigin: URL, mobileAuthEnabled: Bool = false) {
         guard
             expectedOrigin.scheme?.lowercased() == "https",
             let host = expectedOrigin.host
         else { return nil }
         expectedHost = host
         expectedPort = expectedOrigin.port ?? 443
+        self.mobileAuthEnabled = mobileAuthEnabled
     }
 
     func decide(
@@ -56,7 +58,7 @@ struct SchoolSiteNavigationPolicy {
 
         let sameOrigin = isSameOrigin(url)
         if sameOrigin {
-            if url.path == MobileAuthConfig.startPath {
+            if mobileAuthEnabled && url.path == MobileAuthConfig.startPath {
                 return .startMobileAuth(returnTo: sameOriginPath(sourceURL))
             }
             return .allowInWebView
@@ -85,8 +87,12 @@ struct SchoolSiteNavigationPolicy {
             isSameOrigin(sourceURL),
             let components = URLComponents(url: sourceURL, resolvingAgainstBaseURL: false)
         else { return nil }
-        let path = components.path.isEmpty ? "/" : components.path
-        if let query = components.query, !query.isEmpty {
+        // Percent-encoded on both halves: `path` decodes escapes, so mixing it with an encoded
+        // query can turn `%3F` into a real `?` and produce a return_to the school must refuse
+        // (contracts/v1/schemas/mobile-auth-start.schema.json).
+        let encodedPath = components.percentEncodedPath
+        let path = encodedPath.isEmpty ? "/" : encodedPath
+        if let query = components.percentEncodedQuery, !query.isEmpty {
             return path + "?" + query
         }
         return path

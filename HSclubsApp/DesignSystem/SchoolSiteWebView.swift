@@ -3,6 +3,7 @@ import WebKit
 
 struct SchoolSiteWebView: UIViewRepresentable {
     let url: URL
+    let mobileAuthEnabled: Bool
     let onLoadingChanged: (Bool) -> Void
     let onFailure: (String) -> Void
     /// The fixed sign-in entry was tapped on the verified origin; the argument is the current
@@ -16,7 +17,9 @@ struct SchoolSiteWebView: UIViewRepresentable {
         // Appends to the default UA rather than replacing it, so the school still sees a normal
         // browser UA plus a marker that the app can drive mobile auth. The marker advertises a
         // capability; it is never a credential (see contracts/v1/README.md).
-        configuration.applicationNameForUserAgent = MobileAuthConfig.userAgentMarker
+        if mobileAuthEnabled {
+            configuration.applicationNameForUserAgent = MobileAuthConfig.userAgentMarker
+        }
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
@@ -32,6 +35,7 @@ struct SchoolSiteWebView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(
             expectedOrigin: url,
+            mobileAuthEnabled: mobileAuthEnabled,
             onLoadingChanged: onLoadingChanged,
             onFailure: onFailure,
             onLoginRequested: onLoginRequested
@@ -46,11 +50,15 @@ struct SchoolSiteWebView: UIViewRepresentable {
 
         init(
             expectedOrigin: URL,
+            mobileAuthEnabled: Bool,
             onLoadingChanged: @escaping (Bool) -> Void,
             onFailure: @escaping (String) -> Void,
             onLoginRequested: ((String?) -> Void)?
         ) {
-            self.policy = SchoolSiteNavigationPolicy(expectedOrigin: expectedOrigin)
+            self.policy = SchoolSiteNavigationPolicy(
+                expectedOrigin: expectedOrigin,
+                mobileAuthEnabled: mobileAuthEnabled
+            )
             self.onLoadingChanged = onLoadingChanged
             self.onFailure = onFailure
             self.onLoginRequested = onLoginRequested

@@ -54,12 +54,21 @@ actor LiveSchoolsAPI: SchoolsAPI {
         guard (200...299).contains(httpResponse.statusCode) else {
             throw SchoolsAPIError.httpStatus(httpResponse.statusCode)
         }
+        // A declared length over the cap is refused before a single byte is read; an undeclared
+        // or lying length still hits the running check below.
+        if httpResponse.expectedContentLength > Int64(maxResponseBytes) {
+            throw SchoolsAPIError.responseTooLarge
+        }
 
-        var data = Data()
+        // Accumulated in a byte buffer rather than appending to Data per element: the body is
+        // still bounded as it arrives (unlike a bulk load, which would buffer an unbounded body
+        // before anything could reject it), without a Data copy for every byte.
+        var buffer = [UInt8]()
+        buffer.reserveCapacity(min(maxResponseBytes, 64 * 1024))
         do {
             for try await byte in byteStream {
-                data.append(byte)
-                if data.count > maxResponseBytes {
+                buffer.append(byte)
+                if buffer.count > maxResponseBytes {
                     throw SchoolsAPIError.responseTooLarge
                 }
             }
@@ -69,6 +78,6 @@ actor LiveSchoolsAPI: SchoolsAPI {
             throw SchoolsAPIError.transport(error.localizedDescription)
         }
 
-        return data
+        return Data(buffer)
     }
 }

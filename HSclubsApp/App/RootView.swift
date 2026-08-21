@@ -12,6 +12,7 @@ struct RootView: View {
                 SchoolSiteView(
                     school: selection.school,
                     siteURL: selection.siteURL,
+                    mobileAuthEnabled: AppEnvironment.mobileAuthEnabled,
                     schoolSelection: schoolSelection
                 )
             } else {

@@ -4,6 +4,8 @@
 <dict>
 	<key>APIBaseURL</key>
 	<string>$(API_BASE_URL)</string>
+	<key>MobileAuthEnabled</key>
+	<string>$(MOBILE_AUTH_ENABLED)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

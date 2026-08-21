@@ -106,7 +106,27 @@ struct LiveSchoolsAPITests {
 
         await #expect(throws: SchoolsAPIError.responseTooLarge) {
             try await api.fetchDirectoryData()
+    }
+
+    // A declared Content-Length over the cap is refused before the body is read at all.
+    @Test func rejectsADeclaredLengthOverTheMaxSize() async {
+        let oversizedBody = Data(repeating: 0x41, count: 20)
+        StubURLProtocol.setStub(
+            .init(
+                statusCode: 200,
+                headers: ["Content-Length": "20"],
+                body: oversizedBody,
+                error: nil
+            )
+        )
+        defer { StubURLProtocol.setStub(nil) }
+
+        let api = makeAPI(session: makeSession(), maxResponseBytes: 10)
+
+        await #expect(throws: SchoolsAPIError.responseTooLarge) {
+            try await api.fetchDirectoryData()
         }
     }
+}
 }
 

@@ -73,6 +73,25 @@ struct AppDirectoryDecodingTests {
         #expect(riverbend.lastUpdatedAt == fractional.date(from: "2024-04-29T09:15:30.500Z"))
     }
 
+    // A body served at the v1 path that is not a v1 directory must fail the decode, so a future
+    // contract cannot be rendered as if this build understood it.
+    @Test func refusesAnEnvelopeFromAnotherContractOrVersion() {
+        let wrongVersion = Data("""
+        {"contract":"hsclubs.app-directory","version":2,"generatedAt":"2024-05-01T12:00:00Z","schools":[]}
+        """.utf8)
+        #expect(throws: (any Error).self) { try AppDirectoryDecoder.decode(wrongVersion) }
+
+        let wrongContract = Data("""
+        {"contract":"hsclubs.something-else","version":1,"generatedAt":"2024-05-01T12:00:00Z","schools":[]}
+        """.utf8)
+        #expect(throws: (any Error).self) { try AppDirectoryDecoder.decode(wrongContract) }
+
+        let missingEnvelope = Data("""
+        {"generatedAt":"2024-05-01T12:00:00Z","schools":[]}
+        """.utf8)
+        #expect(throws: (any Error).self) { try AppDirectoryDecoder.decode(missingEnvelope) }
+    }
+
     @Test func rejectsAMismatchedHostAsNotEnterable() {
         let impostor = DirectorySchool(
             schoolId: "sch_impostorFFFFFFFFFF",

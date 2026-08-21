@@ -8,7 +8,8 @@
 // not turn an unrelated PR red.
 import process from 'node:process'
 
-const guideOrigin = process.env.HSCLUBS_GUIDE_ORIGIN ?? 'https://hsclubs.net'
+const guideOrigin = process.env.HSCLUBS_GUIDE_ORIGIN?.trim() || 'https://hsclubs.net'
+const requireMobileAuth = process.env.HSCLUBS_REQUIRE_MOBILE_AUTH === 'true'
 const officialCallback = 'https://hsclubs.net/mobile-auth/callback'
 
 const problems = []
@@ -59,11 +60,9 @@ const checkSchool = async (school) => {
     fail(label, `directory status is ${school.integrationStatus}, not compatible`)
     return
   }
-  if (school.mobileAuth !== true) {
-    fail(label, 'directory does not enable mobile auth')
-  }
 
-  // Manifest: identity agrees, mobile auth declared, official callback.
+  // Manifest identity is required for every app release. Mobile auth is checked only when that
+  // separately gated feature is enabled; until then the native app keeps it fail-closed.
   let manifest
   try {
     manifest = await getJson(`${school.siteOrigin}/.well-known/hsclubs-app.json`)
@@ -72,9 +71,12 @@ const checkSchool = async (school) => {
     return
   }
   if (manifest.schoolId !== school.schoolId) fail(label, 'manifest schoolId disagrees with the directory')
-  if (!(manifest.capabilities ?? []).includes('mobile-auth.v1')) fail(label, 'manifest does not declare mobile-auth.v1')
-  if (manifest.auth?.mobile?.supported !== true) fail(label, 'manifest does not support mobile auth')
-  if (manifest.auth?.mobile?.callbackUrl !== officialCallback) fail(label, 'manifest callback is not the official Universal Link')
+  if (requireMobileAuth) {
+    if (school.mobileAuth !== true) fail(label, 'directory does not enable mobile auth')
+    if (!(manifest.capabilities ?? []).includes('mobile-auth.v1')) fail(label, 'manifest does not declare mobile-auth.v1')
+    if (manifest.auth?.mobile?.supported !== true) fail(label, 'manifest does not support mobile auth')
+    if (manifest.auth?.mobile?.callbackUrl !== officialCallback) fail(label, 'manifest callback is not the official Universal Link')
+  }
 
   // Root page: the school's own site must load, since the app opens it in a web view.
   try {
@@ -84,24 +86,24 @@ const checkSchool = async (school) => {
     fail(label, `root page unreachable: ${error.message}`)
   }
 
-  // Mobile-auth entry: a bare GET must exist and answer with the contract's error shape (it is
-  // missing every required parameter), which proves the endpoint is wired without starting a real
-  // sign-in. A 2xx/3xx here would mean the endpoint is not validating its input.
-  try {
-    const response = await fetch(`${school.siteOrigin}/api/mobile-auth/start`, {
-      headers: { accept: 'application/json' },
-      redirect: 'manual',
-    })
-    if (response.status < 400) {
-      fail(label, `mobile-auth start did not reject an empty request (status ${response.status})`)
-    } else {
-      const body = await response.json().catch(() => ({}))
-      if (body.contract !== 'hsclubs.mobile-auth-error') {
-        fail(label, 'mobile-auth start did not answer with the contract error shape')
+  if (requireMobileAuth) {
+    // A bare GET proves the endpoint validates input without starting a real sign-in.
+    try {
+      const response = await fetch(`${school.siteOrigin}/api/mobile-auth/start`, {
+        headers: { accept: 'application/json' },
+        redirect: 'manual',
+      })
+      if (response.status < 400) {
+        fail(label, `mobile-auth start did not reject an empty request (status ${response.status})`)
+      } else {
+        const body = await response.json().catch(() => ({}))
+        if (body.contract !== 'hsclubs.mobile-auth-error') {
+          fail(label, 'mobile-auth start did not answer with the contract error shape')
+        }
       }
+    } catch (error) {
+      fail(label, `mobile-auth start unreachable: ${error.message}`)
     }
-  } catch (error) {
-    fail(label, `mobile-auth start unreachable: ${error.message}`)
   }
 
   // Summary: identity agrees.
@@ -122,7 +124,7 @@ const main = async () => {
     process.exit(1)
   }
 
-  await checkAppSiteAssociation()
+  if (requireMobileAuth) await checkAppSiteAssociation()
   for (const school of directory.schools ?? []) {
     await checkSchool(school)
   }
@@ -134,7 +136,11 @@ const main = async () => {
     process.exit(1)
   }
   console.log(`Release gate passed: ${realSchools.length} real school(s) ready.`)
-  console.log('Note: Google sign-in and WKWebView session recovery are covered by the E2E gate, not this check.')
+  if (requireMobileAuth) {
+    console.log('Mobile auth prerequisites passed; Google sign-in and WKWebView recovery remain in E2E.')
+  } else {
+    console.log('Mobile auth is deferred and was not checked; the app runtime flag must remain disabled.')
+  }
 }
 
 main().catch((error) => {

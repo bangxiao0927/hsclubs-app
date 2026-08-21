@@ -19,21 +19,22 @@ jobs:
       - run: node scripts/check-contracts.mjs
 
   release-check:
-    name: real schools ready
+    name: core app and real schools ready
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      # Every real school must pass manifest, summary, directory, Universal Link and mobile-auth
-      # checks; demo schools are excluded from the auth gate.
+      # An unset repository variable arrives as an empty string; the script deliberately falls
+      # back to production in that case.
       - run: node scripts/release-check.mjs
         env:
           HSCLUBS_GUIDE_ORIGIN: ${{ vars.HSCLUBS_GUIDE_ORIGIN }}
 
   google-e2e:
     name: google sign-in end to end
+    if: ${{ vars.HSCLUBS_MOBILE_AUTH_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,9 +42,8 @@ jobs:
       # lives here, on the schedule and on demand, rather than on PRs, because Google automation is
       # subject to MFA, captcha and risk checks and must never block ordinary work.
       #
-      # The gate is honest about not being wired yet: without the test-account credentials in the
-      # secret store it FAILS rather than reporting a false green, so a release is genuinely blocked
-      # until the driver and its credentials exist. Replace the guard with the real driver then.
+      # This job remains skipped while the native feature flag is off. Enabling the repository
+      # variable makes missing credentials or the placeholder driver fail closed.
       - name: run staging Google sign-in E2E
         env:
           GOOGLE_TEST_ACCOUNT: ${{ secrets.GOOGLE_TEST_ACCOUNT }}
@@ -57,3 +57,19 @@ jobs:
           fi
           echo "Credentials present; run the staging Google sign-in driver here."
           # TODO: invoke the real end-to-end sign-in driver against $STAGING_BASE_URL.
+          echo "Google sign-in E2E driver is not implemented yet."
+          exit 1
+
+  mobile-auth-readiness:
+    name: mobile auth prerequisites
+    if: ${{ vars.HSCLUBS_MOBILE_AUTH_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/release-check.mjs
+        env:
+          HSCLUBS_GUIDE_ORIGIN: ${{ vars.HSCLUBS_GUIDE_ORIGIN }}
+          HSCLUBS_REQUIRE_MOBILE_AUTH: 'true'

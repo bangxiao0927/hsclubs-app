@@ -22,6 +22,8 @@ final class SchoolWebSession: SchoolSessionCompleting {
 
         // Runs in the page so the Set-Cookie lands in this web view. The endpoint is same-origin,
         // so a relative path keeps it on the school's own origin regardless of where it navigates.
+        // The school's own `returnTo` wins; `fallbackReturnTo` is the path the person was on when
+        // they signed in, used only when the school does not say where to go.
         let script = """
         const body = JSON.stringify({ schoolId, code, code_verifier: codeVerifier });
         const response = await fetch("/api/mobile-auth/complete", {
@@ -32,7 +34,13 @@ final class SchoolWebSession: SchoolSessionCompleting {
         });
         if (!response.ok) { return "error"; }
         const result = await response.json();
-        const target = typeof result.returnTo === "string" ? result.returnTo : "/";
+        const isSiteRelative = (value) =>
+            typeof value === "string" && value.startsWith("/") && !value.startsWith("//");
+        const target = isSiteRelative(result.returnTo)
+            ? result.returnTo
+            : isSiteRelative(fallbackReturnTo)
+                ? fallbackReturnTo
+                : "/";
         window.location.assign(target);
         return "ok";
         """
@@ -40,7 +48,12 @@ final class SchoolWebSession: SchoolSessionCompleting {
         do {
             let result = try await webView.callAsyncJavaScript(
                 script,
-                arguments: ["schoolId": schoolId, "code": code, "codeVerifier": codeVerifier],
+                arguments: [
+                    "schoolId": schoolId,
+                    "code": code,
+                    "codeVerifier": codeVerifier,
+                    "fallbackReturnTo": returnTo ?? "",
+                ],
                 contentWorld: .page)
             return (result as? String) == "ok" ? nil : "Sign-in could not be completed. Please try again."
         } catch {

@@ -11,6 +11,9 @@ struct AppDirectory: Sendable, Equatable {
 }
 
 enum AppDirectoryDecoder {
+    static let contract = "hsclubs.app-directory"
+    static let version = 1
+
     /// Decodes the directory, skipping any single school that fails rather than the whole body.
     static func decode(_ data: Data) throws -> AppDirectory {
         let decoder = JSONDecoder()
@@ -29,10 +32,24 @@ enum AppDirectoryDecoder {
             )
         }
         let raw = try decoder.decode(RawDirectory.self, from: data)
+        // The envelope is checked before any school is trusted: a v2 body served at the v1 path,
+        // or some other document that happens to carry `generatedAt` and `schools`, must be a
+        // decoding failure rather than a directory this build renders as if it understood it.
+        guard raw.contract == contract, raw.version == version else {
+            throw DecodingError.dataCorrupted(
+                DecodingError.Context(
+                    codingPath: [],
+                    debugDescription:
+                        "Expected \(contract) v\(version), got \(raw.contract) v\(raw.version)"
+                )
+            )
+        }
         return AppDirectory(generatedAt: raw.generatedAt, schools: raw.schools.compactMap(\.value))
     }
 
     private struct RawDirectory: Decodable {
+        let contract: String
+        let version: Int
         let generatedAt: Date
         let schools: [Failable<DirectorySchool>]
     }
