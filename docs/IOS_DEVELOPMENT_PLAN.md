@@ -116,8 +116,8 @@ xcodebuild test \
 5. 在至少一台真实 iPhone 上验证首次启动、学校切换、重启恢复和外链。
 6. 使用 TestFlight 验证签名、AASA、Cookie 生命周期和升级迁移。
 7. 准备 App Store 图标、截图、描述、支持 URL、隐私政策和隐私申报。
-   支持页面和隐私政策必须真实可访问；`https://hsclubs.net/privacy` 与 `/support` 目前仍是 404，
-   属于提交前必须在 Guiding Page 侧补齐的内容。截图只需要 iPhone 尺寸。
+   隐私政策 `https://hsclubs.net/privacy` 和支持页面 `https://hsclubs.net/support` 已由 Guiding Page
+   提供，提交前确认两者仍返回 200，且内容与 App 实际行为一致。截图只需要 iPhone 尺寸。
 8. Archive Production 构建，上传并提交审核。
 
 ## 发布完成标准
