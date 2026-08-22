@@ -11,6 +11,7 @@
 		03157FF1DE59684805E6D023 /* HSclubsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC666C045FC3095F73FCBED8 /* HSclubsAppUITests.swift */; };
 		10E4799F0F93AA9DD30F0E1F /* AppDirectoryDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04DAFC1DDE3D724FC1BDB56 /* AppDirectoryDecodingTests.swift */; };
 		17700386D4EBFB4B68229CCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADB6F56227F0E931AF9A664D /* Assets.xcassets */; };
+		B2C3D4E5F60718293A4B5C6D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */; };
 		1DF7D4B89D4132ADF2192BC3 /* DirectoryQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06932C9107B4B001A6C1868E /* DirectoryQuery.swift */; };
 		20429E7340A12752C1FFF6DE /* SchoolSessionCompleting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CD2CAA305C16EE881A5B8 /* SchoolSessionCompleting.swift */; };
 		270DB65C5DB73992F0F4E2B4 /* MobileAuthLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570E97B553539EC99EB6B06C /* MobileAuthLoginController.swift */; };
@@ -117,6 +118,7 @@
 		A2680D361DF298C115DA21B5 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		AAD51844BA0088BDB923C973 /* FakeSchoolsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeSchoolsCache.swift; sourceTree = "<group>"; };
 		ADB6F56227F0E931AF9A664D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B3302B0234E8D4657C5A03B9 /* WebAuthenticating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAuthenticating.swift; sourceTree = "<group>"; };
 		B5315B6A0BE9913845E2BD27 /* DirectoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewModel.swift; sourceTree = "<group>"; };
 		B89F1F61FEF555B5BD55E68D /* FloatingSwitcherLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingSwitcherLayout.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				ADB6F56227F0E931AF9A664D /* Assets.xcassets */,
+				A1B2C3D4E5F60718293A4B5C /* PrivacyInfo.xcprivacy */,
 				EFA0DDE5A4287F72A0EEC43E /* App */,
 				9BEF1A8D881CDBF14877EB4D /* Core */,
 				471717814798E32862D6EF08 /* DesignSystem */,
@@ -521,6 +524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17700386D4EBFB4B68229CCA /* Assets.xcassets in Resources */,
+				B2C3D4E5F60718293A4B5C6D /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -619,17 +623,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = HSclubsApp/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 			};
 			name = Staging;
 		};
@@ -645,7 +647,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.uitests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_TARGET_NAME = HSclubs;
 			};
 			name = Development;
@@ -720,7 +722,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.uitests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_TARGET_NAME = HSclubs;
 			};
 			name = Production;
@@ -802,7 +804,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.tests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HSclubs.app/HSclubs";
 			};
 			name = Development;
@@ -814,17 +816,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = HSclubsApp/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 			};
 			name = Production;
 		};
@@ -835,17 +835,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = HSclubsApp/App/HSclubs.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = HSclubsApp/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app;
 				PRODUCT_NAME = HSclubs;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 			};
 			name = Development;
 		};
@@ -919,7 +917,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.tests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HSclubs.app/HSclubs";
 			};
 			name = Staging;
@@ -936,7 +934,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.tests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HSclubs.app/HSclubs";
 			};
 			name = Production;
@@ -953,7 +951,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.hsclubs.app.uitests;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1";
 				TEST_TARGET_NAME = HSclubs;
 			};
 			name = Staging;

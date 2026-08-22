@@ -9,6 +9,7 @@ App 是学校入口和切换器，不是 Guiding Page 的原生重写：
 3. App 记住 `schoolId`，下次启动自动回到该学校。
 4. 学校页面上只覆盖可拖动、贴边、自动收起的切换入口，不显示常驻顶栏。
 5. App 不提供原生学校详情、趋势、分类筛选或社团管理页面。
+6. 仅支持 iPhone。悬浮切换器和全屏学校站点是按单手手机操作设计和验证的，声明 iPad 会上架一套没人验证过的布局。
 
 ## 已完成
 
@@ -22,6 +23,9 @@ App 是学校入口和切换器，不是 Guiding Page 的原生重写：
 - 悬浮切换器的拖动缩小、边缘吸附、展开、点击空白收起和超时收起。
 - v1 跨仓库契约、fixtures、manifest 校验和上游同步 CI。
 - 单元测试、UI 测试，以及 macOS 上执行 `xcodebuild test` 的 CI workflow。
+- 隐私清单 `HSclubsApp/PrivacyInfo.xcprivacy`：不收集数据、不追踪，只申报 `UserDefaults` 的使用原因 `CA92.1`。
+- `ITSAppUsesNonExemptEncryption = false`，上传时不再逐次回答出口合规问题。
+- 版本号集中在 `Configurations/Version.xcconfig`，构建号可由命令行覆盖。
 
 ## 移动认证延期
 
@@ -46,6 +50,16 @@ App 是学校入口和切换器，不是 Guiding Page 的原生重写：
 仓库变量打开后，认证 prerequisites 和 Google E2E 会从 skipped 变成强制门禁；Google driver 未实现时会明确失败，不能出现假绿色。
 
 ## 日常开发流程
+
+### 0. 版本号
+
+`MARKETING_VERSION` 和 `CURRENT_PROJECT_VERSION` 只写在 `Configurations/Version.xcconfig`。上传 App Store Connect 时构建号必须递增，因此发布构建用命令行覆盖，而不是每次改文件：
+
+```bash
+xcodebuild archive ... CURRENT_PROJECT_VERSION=$BUILD_NUMBER
+```
+
+对外版本号变化时才修改 `MARKETING_VERSION`。
 
 ### 1. 同步与契约
 
@@ -94,12 +108,16 @@ xcodebuild test \
 ## 发布流程
 
 1. 确认 Production 的 API 地址、Bundle ID、版本号和认证开关。
+   同时确认隐私清单仍与实际行为一致：新增任何 SDK、分析或 Required Reason API 都要更新
+   `HSclubsApp/PrivacyInfo.xcprivacy`，否则会在上传后收到 Apple 的合规邮件。
 2. 手动运行或触发 Release gate，核心真实学校检查必须通过。
 3. 若移动认证仍关闭，确认相关 jobs 为 skipped，而不是失败后被忽略。
 4. 若移动认证开启，认证 prerequisites 和 Google E2E 必须全部通过。
 5. 在至少一台真实 iPhone 上验证首次启动、学校切换、重启恢复和外链。
 6. 使用 TestFlight 验证签名、AASA、Cookie 生命周期和升级迁移。
 7. 准备 App Store 图标、截图、描述、支持 URL、隐私政策和隐私申报。
+   支持页面和隐私政策必须真实可访问；`https://hsclubs.net/privacy` 与 `/support` 目前仍是 404，
+   属于提交前必须在 Guiding Page 侧补齐的内容。截图只需要 iPhone 尺寸。
 8. Archive Production 构建，上传并提交审核。
 
 ## 发布完成标准
@@ -109,4 +127,5 @@ xcodebuild test \
 - App 中没有 secret，ATS 未放宽，目录和 WebView 只接受验证过的 HTTPS origin。
 - 选择恢复、缓存降级、导航边界和悬浮切换器均有自动化测试。
 - 隐私申报与实际 SDK/网络行为一致。
+- 隐私清单存在且与申报一致，构建号未与既有上传重复。
 - 移动认证未满足全部前置条件时，运行时开关保持关闭。

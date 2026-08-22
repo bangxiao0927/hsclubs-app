@@ -1,0 +1,10 @@
+// The one place the shipped version lives, shared by every configuration.
+//
+// CURRENT_PROJECT_VERSION must increase for each upload to App Store Connect, so a release
+// build overrides it on the command line rather than editing this file per upload:
+//
+//   xcodebuild archive ... CURRENT_PROJECT_VERSION=$BUILD_NUMBER
+//
+// MARKETING_VERSION is the version people see and changes only when a release is planned.
+MARKETING_VERSION = 1.0
+CURRENT_PROJECT_VERSION = 1

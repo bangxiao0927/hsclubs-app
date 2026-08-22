@@ -1,3 +1,4 @@
+#include "Version.xcconfig"
 API_BASE_URL = https:/$()/hsclubs.net
 // Keep disabled until the production Apple App ID, AASA, real-school rollout and E2E gate are ready.
 MOBILE_AUTH_ENABLED = NO

@@ -22,6 +22,7 @@ Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开�
 ## 建议技术栈
 
 - iOS 17+、Xcode 16+、Swift 6
+- 仅支持 iPhone；悬浮切换器和全屏学校站点按单手手机操作设计
 - SwiftUI + Observation，使用轻量 MVVM/Feature 分层
 - `URLSession` + `async/await` + `Codable`
 - XCTest / Swift Testing，使用 URLProtocol stub 测试网络层
@@ -35,6 +36,9 @@ Guiding Page 是一个只读聚合页面。服务端定时从各学校的公开�
 4. 提供可拖动、贴边的悬浮学校切换入口，不显示常驻顶栏。
 5. 支持下拉刷新、加载/空数据/失败状态和最近一次成功数据缓存。
 6. 单个错误学校不会导致整个目录失败，不兼容学校可见但不能进入。
+
+App 不收集任何数据，并随包提供隐私清单：不追踪、不收集数据，只申报用于记住所选学校的
+`UserDefaults`（原因 `CA92.1`）。
 
 移动认证代码已经存在，但所有构建配置默认关闭。生产 Apple App ID、AASA、全部真实学校检查和真机 E2E 完成前不会启用。推送、后台轮询、原生学校详情、社团编辑、学校注册和运维状态页面不属于 MVP。
 

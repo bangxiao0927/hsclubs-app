@@ -35,6 +35,7 @@ a moment.
 ## Suggested stack
 
 - iOS 17+, Xcode 16+, Swift 6
+- iPhone only; the switcher and full-screen school site are designed for one-handed phone use
 - SwiftUI + Observation, with light MVVM/feature layering
 - `URLSession` + `async/await` + `Codable`
 - XCTest / Swift Testing, with a `URLProtocol` stub for the networking layer
@@ -48,6 +49,9 @@ a moment.
 4. Provide the draggable, edge-snapping floating school switcher without a persistent header.
 5. Pull to refresh, loading/empty/failure states, and a local cache of the last successful load.
 6. Keep malformed schools isolated and show incompatible schools without allowing entry.
+
+The app collects nothing and ships a privacy manifest saying so: no tracking, no collected data,
+and `UserDefaults` declared under `CA92.1` for remembering the chosen school.
 
 Mobile authentication code exists but is disabled in every build configuration. It stays off until
 the production Apple App ID, AASA association, all-real-school readiness check and device E2E are

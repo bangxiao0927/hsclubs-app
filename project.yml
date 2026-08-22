@@ -35,6 +35,7 @@ targets:
         APIBaseURL: $(API_BASE_URL)
         MobileAuthEnabled: $(MOBILE_AUTH_ENABLED)
         CFBundleDisplayName: HSclubs
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
     configFiles:
@@ -46,9 +47,11 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: net.hsclubs.app
         PRODUCT_NAME: HSclubs
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        CURRENT_PROJECT_VERSION: 1
-        MARKETING_VERSION: 1.0
-        TARGETED_DEVICE_FAMILY: "1,2"
+        # Version numbers come from Configurations/Version.xcconfig so a release build can
+        # override CURRENT_PROJECT_VERSION without editing the project.
+        # iPhone only: the floating switcher and full-screen school site are designed and tested
+        # for one-handed phone use, and claiming iPad would ship a layout nobody has verified.
+        TARGETED_DEVICE_FAMILY: "1"
 
   HSclubsAppTests:
     type: bundle.unit-test
